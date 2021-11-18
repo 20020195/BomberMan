@@ -1,4 +1,3 @@
-
 import entities.Bomb;
 import entities.Bomber;
 import graphics.Sprite;
@@ -151,12 +150,12 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             if (common_view.bombs.size() < 2) {
-                Bomb bomb = new Bomb(0, 0);
+                Bomb bomb = new Bomb(0,0);
                 int _x = (common_view.bomber.getX()/(common_view.TILESIZE * common_view.SCALE));
                 int _y = (common_view.bomber.getY()/(common_view.TILESIZE * common_view.SCALE));
 
                 if (common_view.bomber.getX() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)
-                    && common_view.bomber.getY() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)) {
+                        && common_view.bomber.getY() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)) {
                     common_view.scene[_y + 1][_x + 1] = '9';
                     bomb.setX(_x + 1);
                     bomb.setY(_y + 1);
