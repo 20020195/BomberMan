@@ -10,71 +10,64 @@ import java.io.IOException;
 public class Sprite {
     public static final int SCALED_SIZE = 3;
 
-    private BufferedImage blockTile;
-    private BufferedImage spriteSheet;
-    private BufferedImage player;
-    private BufferedImage grass;
-    private BufferedImage brick;
-    private BufferedImage wall;
-    private BufferedImage coconut;
-    private BufferedImage coconut_water;
-    private BufferedImage strawberry;
-    private BufferedImage banana;
-    private BufferedImage soil;
-    private BufferedImage mound;
+    public BufferedImage player;
+    public BufferedImage[] playerAnimUp;
+    public BufferedImage[] playerAnimDown;
+    public BufferedImage[] playerAnimRight;
+    public BufferedImage[] playerAnimLeft;
 
-    public BufferedImage getBlockTile() {
-        return blockTile;
-    }
+    public BufferedImage[] bombAnim;
+    public BufferedImage[] fontExplosion;
+    public BufferedImage[] rightExplosion;
+    public BufferedImage[] leftExplosion;
+    public BufferedImage[] upExplosion;
+    public BufferedImage[] downExplosion;
 
-    public BufferedImage getSpriteSheet() {
-        return spriteSheet;
-    }
 
-    public BufferedImage getPlayer() {
-        return player;
-    }
-
-    public BufferedImage getGrass() {
-        return grass;
-    }
-
-    public BufferedImage getBrick() {
-        return brick;
-    }
-
-    public BufferedImage getWall() {
-        return wall;
-    }
-
-    public BufferedImage getCoconut() {
-        return coconut;
-    }
-
-    public BufferedImage getCoconut_water() {
-        return coconut_water;
-    }
-
-    public BufferedImage getStrawberry() {
-        return strawberry;
-    }
-
-    public BufferedImage getBanana() {
-        return banana;
-    }
-
-    public BufferedImage getSoil() {
-        return soil;
-    }
-
-    public BufferedImage getMound() {
-        return mound;
-    }
+    public BufferedImage blockTile;
+    public BufferedImage spriteSheet;
+    public BufferedImage grass;
+    public BufferedImage brick;
+    public BufferedImage wall;
+    public BufferedImage coconut;
+    public BufferedImage coconut_water;
+    public BufferedImage strawberry;
+    public BufferedImage banana;
+    public BufferedImage soil;
+    public BufferedImage mound;
 
     public void load()
     {
         try {
             spriteSheet = ImageIO.read(getClass().getResource("/classic1.png"));
+            playerAnimUp = new BufferedImage[3];
+            playerAnimDown = new BufferedImage[3];
+            playerAnimRight = new BufferedImage[3];
+            playerAnimLeft = new BufferedImage[3];
+            bombAnim = new BufferedImage[3];
+
+            fontExplosion = new BufferedImage[3];
+            upExplosion = new BufferedImage[3];
+            downExplosion = new BufferedImage[3];
+            leftExplosion = new BufferedImage[3];
+            rightExplosion = new BufferedImage[3];
+
+
+            for (int i = 0; i < 3; i++) {
+                playerAnimLeft[i] = spriteSheet.getSubimage(3 * 16, i * 16, 16, 16);
+                playerAnimRight[i] = spriteSheet.getSubimage(1 * 16, i * 16, 16, 16);
+                playerAnimUp[i] = spriteSheet.getSubimage(0, i * 16, 16, 16);
+                playerAnimDown[i] = spriteSheet.getSubimage(2 * 16, i * 16, 16, 16);
+                bombAnim[i] = spriteSheet.getSubimage(i * 16, 3 * 16, 16, 16);
+                fontExplosion[i] = spriteSheet.getSubimage(0, (i + 4) * 16, 16, 16);
+                upExplosion[i] = spriteSheet.getSubimage((i + 1) * 16, 4 * 16, 16, 16);
+                downExplosion[i] = spriteSheet.getSubimage((i + 1) * 16, 6 * 16, 16, 16);
+                leftExplosion[i] = spriteSheet.getSubimage(0, (i + 7) * 16, 16, 16);
+                rightExplosion[i] = spriteSheet.getSubimage(2 * 16, (i + 7) * 16, 16, 16);
+
+            }
+
+
             blockTile = spriteSheet.getSubimage(5 * 16, 14 * 16, 16, 16);
             grass = spriteSheet.getSubimage(6 * 16, 1 * 16, 16, 16);
             brick = spriteSheet.getSubimage(7 * 16, 0 * 16, 16, 16);
