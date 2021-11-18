@@ -61,7 +61,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
         scene = new char[16][22];
         int i = 0;
         try {
-            FileReader fr = new FileReader("/project_test_game/res/levels/level2.txt");
+            FileReader fr = new FileReader("res/levels/level2.txt");
             BufferedReader br = new BufferedReader(fr);
             String line = "";
             while (true) {
