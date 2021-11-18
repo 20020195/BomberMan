@@ -1,4 +1,5 @@
 
+import entities.Bomb;
 import entities.Bomber;
 import graphics.Sprite;
 
@@ -14,11 +15,6 @@ import common.*;
 public class BombermanGame extends JPanel implements Runnable, KeyListener {
     boolean isRunning;
     Thread thread;
-    public static BufferedImage view;
-    Sprite sprite = new Sprite();
-    char[][] scene = new char[16][22];
-
-    Bomber bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
 
     public BombermanGame() {
         setPreferredSize(new Dimension(common_view.WIDTH, common_view.HEIGHT));
@@ -50,7 +46,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
         try {
             common_view.view = new BufferedImage(common_view.WIDTH, common_view.HEIGHT, BufferedImage.TYPE_INT_ARGB);
             create_Map("adasd");
-            sprite.load();
+            common_view.sprite.load();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,7 +54,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
 
     public void create_Map(String path) {
 
-        scene = new char[16][22];
+        common_view.scene = new char[16][22];
         int i = 0;
         try {
             FileReader fr = new FileReader("res/levels/level2.txt");
@@ -71,7 +67,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
                 line = br.readLine();
                 if (line != null) {
                     for (int j = 0; j<line.length(); j++) {
-                        scene[i][j] = line.charAt(j);
+                        common_view.scene[i][j] = line.charAt(j);
                     }
                     i+=1;
                 }
@@ -82,7 +78,12 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
     }
 
     public void update() {
-        bomber.update(common_view.TILESIZE, common_view.SCALE, scene);
+        common_view.bomber.update(common_view.TILESIZE, common_view.SCALE, common_view.scene);
+        if (common_view.bombs.size() > 0) {
+            for (int i = 0; i < common_view.bombs.size(); i++) {
+                common_view.bombs.get(i).update();
+            }
+        }
     }
 
     public void draw() {
@@ -93,22 +94,34 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
         int size = common_view.TILESIZE * common_view.SCALE;
         for (int i = 0; i < common_view.ROWS; i++) {
             for (int j = 0; j < common_view.COLUMNS; j++) {
-                if (scene[i][j] == 35) {
-                    g2.drawImage(sprite.getCoconut(), j * size, i * size, size, size, null);
-                } else if (scene[i][j] == 42) {
-                    g2.drawImage(sprite.getCoconut_water(), j * size, i * size, size, size, null);
-                } else if (scene[i][j] == 98) {
-                    g2.drawImage(sprite.getBanana(), j * size, i * size, size, size, null);
-                } else if (scene[i][j] == 99) {
-                    g2.drawImage(sprite.getMound(), j * size, i * size, size, size, null);
-                } else if (scene[i][j] == 100) {
-                    g2.drawImage(sprite.getStrawberry(), j * size, i * size, size, size, null);
+                if (common_view.scene[i][j] == 35) {
+                    g2.drawImage(common_view.sprite.coconut, j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 42) {
+                    g2.drawImage(common_view.sprite.coconut_water, j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 98) {
+                    g2.drawImage(common_view.sprite.banana, j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 99) {
+                    g2.drawImage(common_view.sprite.mound, j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 100) {
+                    g2.drawImage(common_view.sprite.strawberry, j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 57) {
+                    for (int k = 0; k < common_view.bombs.size(); k++) {
+                        g2.drawImage(common_view.sprite.bombAnim[common_view.bombs.get(k).indexAnimBomb], common_view.bombs.get(k).getX() * size, common_view.bombs.get(k).getY() * size, size, size, null);
+                        if (common_view.bombs.get(k).exploded) {
+                            g2.drawImage(common_view.sprite.fontExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, common_view.bombs.get(k).getY() * size, size, size, null);
+                            g2.drawImage(common_view.sprite.upExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, (common_view.bombs.get(k).getY() - 1) * size, size, size, null);
+                            g2.drawImage(common_view.sprite.downExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, (common_view.bombs.get(k).getY() + 1) * size, size, size, null);
+                            g2.drawImage(common_view.sprite.leftExplosion[common_view.bombs.get(k).indexAnimExplosion], (common_view.bombs.get(k).getX() - 1) * size, common_view.bombs.get(k).getY() * size, size, size, null);
+                            g2.drawImage(common_view.sprite.rightExplosion[common_view.bombs.get(k).indexAnimExplosion], (common_view.bombs.get(k).getX() + 1) * size, common_view.bombs.get(k).getY() * size, size, size, null);
+
+                        }
+                    }
                 } else {
-                    g2.drawImage(sprite.getSoil(), j * size, i * size, size, size, null);
+                    g2.drawImage(common_view.sprite.soil, j * size, i * size, size, size, null);
                 }
             }
         }
-        g2.drawImage(sprite.getPlayer(), bomber.getX(), bomber.getY(), size, size, null);
+        g2.drawImage(common_view.sprite.player, common_view.bomber.getX(), common_view.bomber.getY(), size, size, null);
         Graphics g = getGraphics();
         g.drawImage(common_view.view, 0, 0, common_view.WIDTH, common_view.HEIGHT, null);
         g.dispose();
@@ -136,6 +149,38 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (common_view.bombs.size() < 2) {
+                Bomb bomb = new Bomb(0, 0);
+                int _x = (common_view.bomber.getX()/(common_view.TILESIZE * common_view.SCALE));
+                int _y = (common_view.bomber.getY()/(common_view.TILESIZE * common_view.SCALE));
+
+                if (common_view.bomber.getX() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)
+                    && common_view.bomber.getY() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)) {
+                    common_view.scene[_y + 1][_x + 1] = '9';
+                    bomb.setX(_x + 1);
+                    bomb.setY(_y + 1);
+                } else if (common_view.bomber.getX() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)) {
+                    common_view.scene[_y][_x + 1] = '9';
+                    bomb.setX(_x + 1);
+                    bomb.setY(_y);
+                } else if (common_view.bomber.getY() % (common_view.TILESIZE * common_view.SCALE) > (common_view.TILESIZE * common_view.SCALE / 2)) {
+                    common_view.scene[_y + 1][_x] = '9';
+                    bomb.setX(_x);
+                    bomb.setY(_y + 1);
+                } else {
+                    common_view.scene[_y][_x] = '9';
+                    bomb.setX(_x);
+                    bomb.setY(_y);
+                }
+
+/*                bomb.setX(_x);
+                bomb.setY(_y);
+                common_view.scene[_y][_x] = '9';*/
+
+                common_view.bombs.add(bomb);
+            }
+        }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             common_view.right = true;
         }
