@@ -4,11 +4,16 @@ import entities.Bomb;
 import entities.Bomber;
 import graphics.Sprite;
 
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Queue;
 
 public class common_view {
+    public static JFrame w = new JFrame("Bomberman");
+
+    public static JButton button = new JButton("Ok");
+
     public static final int TILESIZE = 16;
     public static final int ROWS = 16;
     public static final int COLUMNS = 22;
