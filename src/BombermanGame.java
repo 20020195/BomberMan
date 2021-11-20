@@ -2,6 +2,7 @@ import entities.Bomb;
 import entities.Bomber;
 import graphics.Sprite;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -21,14 +22,27 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
     }
 
     public static void main(String[] args) throws IOException {
+        boolean menu = false;
 
-        JFrame w = new JFrame("Bomberman");
-        w.setResizable(false);
-        w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        w.add(new BombermanGame());
-        w.pack();  //pack này nó sẽ chạy addNotify rồi đến run rồi start.
-        w.setLocationRelativeTo(null);
-        w.setVisible(true);  //thực hiện hàm draw().
+
+        while (menu) {
+            common_view.w.setSize(common_view.WIDTH, common_view.HEIGHT);
+            common_view.w.setLocationRelativeTo(null);
+            common_view.w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            String path = "C:/Users/tranh/Desktop/classic1.png";
+            File file = new File(path);
+            BufferedImage image = ImageIO.read(file);
+            JLabel label = new JLabel(new ImageIcon(image));
+            common_view.w.add(label);
+            common_view.w.setVisible(true);
+        }
+        common_view.w.setResizable(false);
+        common_view.w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        common_view.w.add(new BombermanGame());
+        common_view.w.pack();  //pack này nó sẽ chạy addNotify rồi đến run rồi start.
+        common_view.w.setLocationRelativeTo(null);
+        common_view.w.setVisible(true);  //thực hiện hàm draw().
     }
 
     @Override
@@ -93,29 +107,30 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
         int size = common_view.TILESIZE * common_view.SCALE;
         for (int i = 0; i < common_view.ROWS; i++) {
             for (int j = 0; j < common_view.COLUMNS; j++) {
-                if (common_view.scene[i][j] == 35) {
+                if (common_view.scene[i][j] == '#') {
                     g2.drawImage(common_view.sprite.coconut, j * size, i * size, size, size, null);
-                } else if (common_view.scene[i][j] == 42) {
+                } else if (common_view.scene[i][j] == '*') {
                     g2.drawImage(common_view.sprite.coconut_water, j * size, i * size, size, size, null);
-                } else if (common_view.scene[i][j] == 98) {
+                } else if (common_view.scene[i][j] == 'b') {
                     g2.drawImage(common_view.sprite.banana, j * size, i * size, size, size, null);
-                } else if (common_view.scene[i][j] == 99) {
+                } else if (common_view.scene[i][j] == 'c') {
                     g2.drawImage(common_view.sprite.mound, j * size, i * size, size, size, null);
-                } else if (common_view.scene[i][j] == 100) {
+                } else if (common_view.scene[i][j] == 'd') {
                     g2.drawImage(common_view.sprite.strawberry, j * size, i * size, size, size, null);
-                } else if (common_view.scene[i][j] == 57) {
-                    for (int k = 0; k < common_view.bombs.size(); k++) {
-                        g2.drawImage(common_view.sprite.bombAnim[common_view.bombs.get(k).indexAnimBomb], common_view.bombs.get(k).getX() * size, common_view.bombs.get(k).getY() * size, size, size, null);
-                        if (common_view.bombs.get(k).exploded) {
-                            g2.drawImage(common_view.sprite.fontExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, common_view.bombs.get(k).getY() * size, size, size, null);
-                            g2.drawImage(common_view.sprite.upExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, (common_view.bombs.get(k).getY() - 1) * size, size, size, null);
-                            g2.drawImage(common_view.sprite.downExplosion[common_view.bombs.get(k).indexAnimExplosion], common_view.bombs.get(k).getX() * size, (common_view.bombs.get(k).getY() + 1) * size, size, size, null);
-                            g2.drawImage(common_view.sprite.leftExplosion[common_view.bombs.get(k).indexAnimExplosion], (common_view.bombs.get(k).getX() - 1) * size, common_view.bombs.get(k).getY() * size, size, size, null);
-                            g2.drawImage(common_view.sprite.rightExplosion[common_view.bombs.get(k).indexAnimExplosion], (common_view.bombs.get(k).getX() + 1) * size, common_view.bombs.get(k).getY() * size, size, size, null);
-
-                        }
-                    }
-                } else {
+                } else if (common_view.scene[i][j] == '9') {
+                    g2.drawImage(common_view.sprite.bombAnim[common_view.bombs.get(0).indexAnimBomb], j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 'F') {
+                    g2.drawImage(common_view.sprite.fontExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 'D') {
+                    g2.drawImage(common_view.sprite.rightExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 'S') {
+                    g2.drawImage(common_view.sprite.downExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 'A') {
+                    g2.drawImage(common_view.sprite.leftExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
+                } else if (common_view.scene[i][j] == 'W') {
+                    g2.drawImage(common_view.sprite.upExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
+                }
+                else {
                     g2.drawImage(common_view.sprite.soil, j * size, i * size, size, size, null);
                 }
             }
@@ -176,6 +191,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener {
 /*                bomb.setX(_x);
                 bomb.setY(_y);
                 common_view.scene[_y][_x] = '9';*/
+                System.out.println("(" + bomb.getX() + ", " + bomb.getY() + ")");
 
                 common_view.bombs.add(bomb);
             }
