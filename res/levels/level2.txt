@@ -1,16 +1,16 @@
 ######################
-#  c# bc d* db# **c  #
-#   **# #*c*d*# bc## #
-# #*d #c#* c*b*# *#*b#
-# **#*dc #**bd c# #c##
-#c*c#b *#ccc#*#*cbcd##
-### #*# c*#* #*# # # #
-# *cd* #  **dc #*# c #
-#*##cc#* b*#*#  *#*#*#
-#d#c  **### * cb * #d#
-# #*d*b  *  ##*d*#*# #
-#  *b #b#c*b # d#c*  #
-#c*c#b *##b#c* *cbcd##
-# # **# *c*d *# bc#* #
-#  c#bc d* db## **d  #
+#  c# xc vz vx# zzc  #
+#   zz# #zczvz# xc## #
+# #zv #c#z czxz# z#zx#
+# zz#zvc #zzxv c# #c##
+#czc#x z#ccc#z#zcxcv##
+### #z# cz#z #z# # # #
+# zcvz #  zzvc #z# c #
+#z##cc#z xz#z#  z#z#z#
+#v#c  zz### z cx z #v#
+# #zvzx  z  ##zvz#z# #
+#  zx #x#czx # v#cz  #
+#czc#x z##x#cz zcxcv##
+# # zz# zczv z# xc#z #
+#  c#xc vz vx## zzv  #
 ######################
