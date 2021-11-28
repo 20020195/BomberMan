@@ -276,22 +276,22 @@ public class Bomber extends Entity {
                     scene[y1][x1+1] = ' ';
                     common_view.has_item[y1][x1+1] = 0;
                 }
-                if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == '1') {
+                else if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == '1') {
                     a = true;
                     scene[y1+1][x1+1] = ' ';
                     common_view.has_item[y1+1][x1+1] = 0;
                 }
-                if (scene[y1][x1+1] == '1' && scene[y1+1][x1+1] == 57) {
+                else if (scene[y1][x1+1] == '1' && scene[y1+1][x1+1] == 57) {
                     a = true;
                     scene[y1][x1+1] = ' ';
                     common_view.has_item[y1][x1+1] = 0;
                 }
-                if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == '1') {
+                else if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == '1') {
                     a = true;
                     scene[y1+1][x1+1] = ' ';
                     common_view.has_item[y1][x1+1] = 0;
                 }
-                if (scene[y1][x1+1] == '1' && scene[y1+1][x1+1] == '1') a = true;
+                else if (scene[y1][x1+1] == '1' && scene[y1+1][x1+1] == '1')
                 {
                     a = true;
                     scene[y1][x1+1] = ' ';
@@ -299,10 +299,10 @@ public class Bomber extends Entity {
                     scene[y1+1][x1+1] = ' ';
                     common_view.has_item[y1][x1+1] = 0;
                 }
-                if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == 32) a = true;
-                if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == 57) a = true;
-                if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == 32) a = true;
-                if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == 57) a = true;
+                else if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == 32) a = true;
+                else if (scene[y1][x1+1] == 32 && scene[y1+1][x1+1] == 57) a = true;
+                else if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == 32) a = true;
+                else if (scene[y1][x1+1] == 57 && scene[y1+1][x1+1] == 57) a = true;
             }
         } return a;
     }
