@@ -48,10 +48,10 @@ public class Sprite {
             common_view.view_game_over = ImageIO.read(getClass().getResource("/lose.png"));
             spriteSheet = ImageIO.read(getClass().getResource("/classic1.png"));
 
-            playerAnimUp = new BufferedImage[3];
-            playerAnimDown = new BufferedImage[3];
-            playerAnimRight = new BufferedImage[3];
-            playerAnimLeft = new BufferedImage[3];
+            playerAnimUp = new BufferedImage[8];
+            playerAnimDown = new BufferedImage[8];
+            playerAnimRight = new BufferedImage[8];
+            playerAnimLeft = new BufferedImage[8];
             bombAnim = new BufferedImage[3];
 
             fontExplosion = new BufferedImage[3];
@@ -67,12 +67,15 @@ public class Sprite {
                 item1[i + 3] = spriteSheet.getSubimage(10 * 16, i * 16, 16, 16);
             }
 
+            for (int i = 0; i < 8; i++) {
+                playerAnimLeft[i] = spriteSheet.getSubimage((i + 8) * 16, 13 * 16, 16, 16);
+                playerAnimRight[i] = spriteSheet.getSubimage((i + 8) * 16, 12 * 16, 16, 16);
+                playerAnimUp[i] = spriteSheet.getSubimage((i + 8) * 16, 10 * 16, 16, 16);
+                playerAnimDown[i] = spriteSheet.getSubimage((i + 8) * 16, 11 * 16, 16, 16);
+            }
+
 
             for (int i = 0; i < 3; i++) {
-                playerAnimLeft[i] = spriteSheet.getSubimage(3 * 16, i * 16, 16, 16);
-                playerAnimRight[i] = spriteSheet.getSubimage(1 * 16, i * 16, 16, 16);
-                playerAnimUp[i] = spriteSheet.getSubimage(0, i * 16, 16, 16);
-                playerAnimDown[i] = spriteSheet.getSubimage(2 * 16, i * 16, 16, 16);
                 bombAnim[i] = spriteSheet.getSubimage(i * 16, 3 * 16, 16, 16);
                 fontExplosion[i] = spriteSheet.getSubimage(0, (i + 4) * 16, 16, 16);
                 upExplosion[i] = spriteSheet.getSubimage((i + 1) * 16, 4 * 16, 16, 16);
@@ -93,7 +96,7 @@ public class Sprite {
             banana = spriteSheet.getSubimage(4 * 16, 14 * 16, 16, 16);
             soil = spriteSheet.getSubimage(5 * 16, 1 * 16, 16, 16);
             mound = spriteSheet.getSubimage(1 * 16, 13 * 16, 16, 16);
-            player = spriteSheet.getSubimage(2 * 16, 0 * 16, 16, 16);
+            player = spriteSheet.getSubimage(8 * 16, 11 * 16, 16, 16);
         } catch (IOException e) {
             e.printStackTrace();
         }

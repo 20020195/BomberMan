@@ -33,6 +33,7 @@ public class common_view {
     public static BufferedImage view_game_over;
 
     public static char[][] scene = new char[16][22];
+    public static int[][] has_item = new int[16][22];
 
 
     // public static boolean right = false, left = false, up = false, down = false;

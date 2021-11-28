@@ -177,6 +177,7 @@ package entities;
 
 import common.*;
 import graphics.Sprite;
+import sfx.SoundEffect;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -222,7 +223,7 @@ public class Bomber extends Entity {
             if (framePlayer > intervalPlayer) {
                 framePlayer = 0;
                 indexAnimPlayer++;
-                if (indexAnimPlayer > 2) {
+                if (indexAnimPlayer > 7) {
                     indexAnimPlayer = 0;
                 }
             }
@@ -242,6 +243,7 @@ public class Bomber extends Entity {
             common_view.sprite.player = common_view.sprite.playerAnimDown[0];
         }
     }
+
     public boolean isFreeR(int x, int y, char[][] scene) {
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
@@ -253,7 +255,10 @@ public class Bomber extends Entity {
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '9') {
+                if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '9' || scene[y1][x1 + 1] == '1') {
+                    if (scene[y1][x1 + 1] == '1') {
+                        scene[y1][x1 + 1] = ' ';
+                    }
                     a = true;
                 } else {
                     a = false;
@@ -280,7 +285,10 @@ public class Bomber extends Entity {
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1][x1-1]==32 || scene[y1][x1-1]==57) {
+                if (scene[y1][x1-1] == ' ' || scene[y1][x1-1] == '9' || scene[y1][x1-1] == '1') {
+                    if (scene[y1][x1-1] == '1') {
+                        scene[y1][x1-1] = ' ';
+                    }
                     a = true;
                 } else {
                     a = false;
@@ -307,7 +315,10 @@ public class Bomber extends Entity {
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1-1][x1]==32 || scene[y1-1][x1]==57) {
+                if (scene[y1-1][x1] == ' ' || scene[y1-1][x1] == '9' || scene[y1-1][x1] == '1') {
+                    if (scene[y1-1][x1] == '1') {
+                        scene[y1-1][x1] = ' ';
+                    }
                     a = true;
                 } else {
                     a = false;
@@ -334,7 +345,10 @@ public class Bomber extends Entity {
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1+1][x1]==32 || scene[y1+1][x1]==57) {
+                if (scene[y1+1][x1] == ' ' || scene[y1+1][x1] == '9' || scene[y1+1][x1] == '1') {
+                    if (scene[y1+1][x1] == '1') {
+                        scene[y1+1][x1] = ' ';
+                    }
                     a = true;
                 } else {
                     a = false;
