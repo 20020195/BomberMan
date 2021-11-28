@@ -1,6 +1,7 @@
 package entities;
 
 import graphics.Sprite;
+import common.*;
 
 
 public abstract class Entity {
@@ -28,8 +29,8 @@ public abstract class Entity {
 
     //Khởi tạo đối tượng, chuyển từ tọa độ đơn vị sang tọa độ trong canvas
     public Entity( int xUnit, int yUnit) {
-        this.x = xUnit * Sprite.SCALED_SIZE;
-        this.y = yUnit * Sprite.SCALED_SIZE;
+        this.x = xUnit * common_view.SCALE;
+        this.y = yUnit * common_view.SCALE;
     }
 
     //public abstract void update();
