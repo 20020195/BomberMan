@@ -1,7 +1,7 @@
 package entities;
 
 import common.common_view;
-import sfx.SoundEffect;
+import sound.SoundEffect;
 
 public class Bomb extends Entity {
         public int frameBomb = 0;
@@ -16,7 +16,7 @@ public class Bomb extends Entity {
         public int intervalExplosion = 3;
         public int indexAnimExplosion = 0;
 
-        public SoundEffect sound_explosion = new SoundEffect("src/sfx/bomb_explosion.wav");
+        public SoundEffect sound_explosion = new SoundEffect("res/audio/bomb_explosion.wav");
 
         public Bomb(int xUnit, int yUnit) {
                 super(xUnit, yUnit);
@@ -39,52 +39,111 @@ public class Bomb extends Entity {
                 }
         }
 
-        public void nguoicobinokhong(int _x, int _y) {
+        public boolean nguoicobinokhong(int _x, int _y) {
+                if (common_view.bomber.no_dead) {
+                        return false;
+                }
                 int size = common_view.TILESIZE * common_view.SCALE;
                 int x_bomber = common_view.bomber.getX();
                 int y_bomber = common_view.bomber.getY();
-                if (x_bomber > (_x - 2) * size && x_bomber < (_x - 1) * size)
+                if (x_bomber > (_x - 2) * size && x_bomber < (_x - 1) * size) {
                         if (y_bomber > (_y - 1) * size && y_bomber < (_y + 1) * size) {
-                                common_view.is_playing = false;
-                                common_view.choose_map = false;
-                                common_view.how_to_play = false;
-                                common_view.menu = false;
-                                common_view.game_over = true;
+                                return true;
                         }
+                }
                 if (x_bomber > (_x - 1) * size && x_bomber < (_x) * size) {
                         if (y_bomber > (_y - 2) * size && y_bomber < (_y + 2) * size) {
-                                common_view.is_playing = false;
-                                common_view.choose_map = false;
-                                common_view.how_to_play = false;
-                                common_view.menu = false;
-                                common_view.game_over = true;
+                                return true;
                         }
                 }
                 if (x_bomber == (_x - 1) * size || x_bomber == (_x + 1) * size) {
                         if (y_bomber > (_y - 1) * size && y_bomber < (_y + 1) * size) {
-                                common_view.is_playing = false;
-                                common_view.choose_map = false;
-                                common_view.how_to_play = false;
-                                common_view.menu = false;
-                                common_view.game_over = true;
+                                return true;
                         }
                 }
                 if (x_bomber >= (_x)  *  size && x_bomber < (_x + 1) * size) {
                         if (y_bomber > (_y - 2) * size && y_bomber < (_y + 2) * size) {
-                                common_view.is_playing = false;
-                                common_view.choose_map = false;
-                                common_view.how_to_play = false;
-                                common_view.menu = false;
-                                common_view.game_over = true;
+                                return true;
                         }
                 }
                 if (x_bomber > (_x + 1) * size && x_bomber < (_x + 2) * size) {
                         if (y_bomber > (_y - 1) * size && y_bomber < (_y + 1) * size) {
-                                common_view.is_playing = false;
-                                common_view.choose_map = false;
-                                common_view.how_to_play = false;
-                                common_view.menu = false;
-                                common_view.game_over = true;
+                                return true;
+                        }
+                }
+                return false;
+        }
+
+        public void animExplosion(Bomb bomb, int i) {
+                int _x = bomb.getX();
+                int _y = bomb.getY();
+                bomb.frameExplosion++;
+                if (bomb.frameExplosion == intervalExplosion) {
+                        bomb.frameExplosion = 0;
+                        bomb.indexAnimExplosion++;
+                        if (bomb.indexAnimExplosion == 3) {
+                                bomb.indexAnimExplosion = 0;
+                                common_view.scene[_y][_x] = ' ';
+                                if (common_view.has_item[_y + 1][_x] == 1) {
+                                        int random = (int) (Math.random() * 100 + 1);
+                                        Item item = new Item(0, 0);
+                                        common_view.items.add(item);
+                                        if (random % 2 == 0) {
+                                                common_view.scene[_y + 1][_x] = '1';
+                                        } else {
+                                                common_view.scene[_y + 1][_x] = '2';
+                                        }
+                                } else if (common_view.has_item[_y + 1][_x] == 0) {
+                                        common_view.scene[_y + 1][_x] = ' ';
+                                }
+                                if (common_view.has_item[_y - 1][_x] == 1) {
+                                        Item item = new Item(0, 0);
+                                        common_view.items.add(item);
+                                        int random = (int) (Math.random() * 100 + 1);
+                                        if (random % 2 == 0) {
+                                                common_view.scene[_y - 1][_x] = '1';
+                                        } else {
+                                                common_view.scene[_y - 1][_x] = '2';
+                                        }
+                                } else if (common_view.has_item[_y - 1][_x] == 0) {
+                                        common_view.scene[_y - 1][_x] = ' ';
+                                }
+                                if (common_view.has_item[_y][_x + 1] == 1) {
+                                        Item item = new Item(0, 0);
+                                        common_view.items.add(item);
+                                        int random = (int) (Math.random() * 100 + 1);
+                                        if (random % 2 == 0) {
+                                                common_view.scene[_y][_x + 1] = '1';
+                                        } else {
+                                                common_view.scene[_y][_x + 1] = '2';
+                                        }
+                                } else if (common_view.has_item[_y][_x + 1] == 0) {
+                                        common_view.scene[_y][_x + 1] = ' ';
+                                }
+                                if (common_view.has_item[_y][_x - 1] == 1) {
+                                        Item item = new Item(0, 0);
+                                        common_view.items.add(item);
+                                        int random = (int) (Math.random() * 100 + 1);
+                                        if (random % 2 == 0) {
+                                                common_view.scene[_y][_x - 1] = '1';
+                                        } else {
+                                                common_view.scene[_y][_x - 1] = '2';
+                                        }
+                                } else if (common_view.has_item[_y][_x - 1] == 0) {
+                                        common_view.scene[_y][_x - 1] = ' ';
+                                }
+
+                                if (nguoicobinokhong(_x, _y)) {
+                                        common_view.is_playing = false;
+                                        common_view.choose_map = false;
+                                        common_view.how_to_play = false;
+                                        common_view.menu = false;
+                                        common_view.game_over = true;
+                                        common_view.sound_game.stop_sound();
+                                        common_view.sound_game_over.is_play_music = false;
+                                        common_view.sound_game_over.play_sound();
+                                }
+                                common_view.bombs.remove(i);
                         }
                 }
         }
@@ -112,48 +171,8 @@ public class Bomb extends Entity {
                                         if (common_view.scene[_y - 1][_x] != '#') {
                                                 common_view.scene[_y - 1][_x] = 'w';
                                         }
-                                        common_view.bombs.get(i).frameExplosion++;
-                                        if (common_view.bombs.get(i).frameExplosion == intervalExplosion) {
-                                                common_view.bombs.get(i).frameExplosion = 0;
-                                                common_view.bombs.get(i).indexAnimExplosion++;
-                                                if (common_view.bombs.get(i).indexAnimExplosion == 3) {
-                                                        common_view.bombs.get(i).indexAnimExplosion = 0;
 
-                                                        common_view.scene[_y][_x] = ' ';
-                                                        if (common_view.has_item[_y + 1][_x] == 1) {
-                                                                Item item = new Item(0, 0);
-                                                                common_view.items.add(item);
-                                                                common_view.scene[_y + 1][_x] = '1';
-                                                        } else if (common_view.has_item[_y + 1][_x] == 0) {
-                                                                common_view.scene[_y + 1][_x] = ' ';
-                                                        }
-                                                        if (common_view.has_item[_y - 1][_x] == 1) {
-                                                                Item item = new Item(0, 0);
-                                                                common_view.items.add(item);
-                                                                common_view.scene[_y - 1][_x] = '1';
-                                                        } else if (common_view.has_item[_y - 1][_x] == 0) {
-                                                                common_view.scene[_y - 1][_x] = ' ';
-                                                        }
-                                                        if (common_view.has_item[_y][_x + 1] == 1) {
-                                                                Item item = new Item(0, 0);
-                                                                common_view.items.add(item);
-                                                                common_view.scene[_y][_x + 1] = '1';
-                                                        } else if (common_view.has_item[_y][_x + 1] == 0) {
-                                                                common_view.scene[_y][_x + 1] = ' ';
-                                                        }
-                                                        if (common_view.has_item[_y][_x - 1] == 1) {
-                                                                Item item = new Item(0, 0);
-                                                                common_view.items.add(item);
-                                                                common_view.scene[_y][_x - 1] = '1';
-                                                        } else if (common_view.has_item[_y][_x - 1] == 0) {
-                                                                common_view.scene[_y][_x - 1] = ' ';
-                                                        }
-
-                                                        nguoicobinokhong(_x, _y);
-
-                                                        common_view.bombs.remove(i);
-                                                }
-                                        }
+                                        animExplosion(common_view.bombs.get(i), i);
                                 }
                         }
                 }
