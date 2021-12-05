@@ -1,19 +1,12 @@
+import common.*;
+import sound.*;
+import entities.*;
 
-import entities.Bomb;
-import entities.Bomber;
-import graphics.Sprite;
-
-import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Random;
-
-import common.*;
 
 public class BombermanGame extends JPanel implements Runnable, KeyListener, MouseListener {
     boolean isRunning;
@@ -26,7 +19,6 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
     }
 
     public static void main(String[] args) throws IOException {
-
         common_view.w.setResizable(false);
         common_view.w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         common_view.w.add(new BombermanGame());
@@ -50,12 +42,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
             common_view.view = new BufferedImage(common_view.WIDTH, common_view.HEIGHT, BufferedImage.TYPE_INT_ARGB);
             common_view.view_menu = new BufferedImage(common_view.WIDTH, common_view.HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
-            create_Map(common_view.level);
             common_view.sprite.load();
-
-/*            Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(new File("src/asd.wav")));
-            clip.start();*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,12 +81,13 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
                 }
             }
         } catch (Exception e) {
-            System.out.print(e.getMessage());
+            e.printStackTrace(System.out);
         }
     }
 
     public void update() {
         common_view.bomber.update(common_view.TILESIZE, common_view.SCALE, common_view.scene);
+        common_view.enemy.update1(common_view.TILESIZE, common_view.SCALE, common_view.scene);
         if (common_view.bombs.size() > 0) {
             for (int i = 0; i < common_view.bombs.size(); i++) {
                 common_view.bombs.get(i).update();
@@ -131,15 +119,17 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
                         g2.drawImage(common_view.sprite.strawberry, j * size, i * size, size, size, null);
                     } else if (common_view.scene[i][j] == '1') {
                         g2.drawImage(common_view.sprite.item1[common_view.items.get(0).indexAnimItem], j * size, i * size, size, size, null);
+                    } else if (common_view.scene[i][j] == '2') {
+                        g2.drawImage(common_view.sprite.item2[common_view.items.get(0).indexAnimItem], j * size, i * size, size, size, null);
                     } else if (common_view.scene[i][j] == '9') {
                         g2.drawImage(common_view.sprite.bombAnim[common_view.bombs.get(0).indexAnimBomb], j * size, i * size, size, size, null);
                     } else if (common_view.scene[i][j] == 'f') {
                         g2.drawImage(common_view.sprite.fontExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
-                    } else if (common_view.scene[i][j] == 'd' || common_view.scene[i][j] == 'D') {
+                    } else if (common_view.scene[i][j] == 'd') {
                         g2.drawImage(common_view.sprite.rightExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
-                    } else if (common_view.scene[i][j] == 's' || common_view.scene[i][j] == 'S') {
+                    } else if (common_view.scene[i][j] == 's') {
                         g2.drawImage(common_view.sprite.downExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
-                    } else if (common_view.scene[i][j] == 'a' || common_view.scene[i][j] == 'A') {
+                    } else if (common_view.scene[i][j] == 'a') {
                         g2.drawImage(common_view.sprite.leftExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
                     } else if (common_view.scene[i][j] == 'w') {
                         g2.drawImage(common_view.sprite.upExplosion[common_view.bombs.get(0).indexAnimExplosion], j * size, i * size, size, size, null);
@@ -150,6 +140,7 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
                 }
             }
             g2.drawImage(common_view.sprite.player, common_view.bomber.getX(), common_view.bomber.getY(), size, size, null);
+            g2.drawImage(common_view.sprite.enemy, common_view.enemy.getX(), common_view.enemy.getY(), size, size, null);
         } else if (common_view.how_to_play) {
             g2.drawImage(common_view.view_how_to_play,0, 0, common_view.WIDTH, common_view.HEIGHT, null);
         } else if (common_view.choose_map) {
@@ -170,6 +161,9 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
     @Override
     public void run() {
         try {
+            common_view.sound_game = new SoundEffect("res/audio/theme.wav");
+            common_view.sound_game_over = new SoundEffect("res/audio/sound_game_over.wav");
+            common_view.sound_game.play_sound();
             requestFocus();
             start();
             while (isRunning) {
@@ -234,6 +228,13 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
             }
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 common_view.bomber.down = true;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_M) {
+                if (common_view.sound_game.is_play_music) {
+                    common_view.sound_game.stop_sound();
+                } else {
+                    common_view.sound_game.play_sound();
+                }
             }
         }
     }
@@ -320,6 +321,9 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
                     && e.getY() > 379 && e.getY() < 423) {
                 common_view.game_over = false;
                 common_view.menu = true;
+                common_view.sound_game_over.stop_sound();
+                common_view.sound_game.is_play_music = false;
+                common_view.sound_game.play_sound();
             } else if (e.getX() > 381 && e.getX() < 525
                     && e.getY() > 352 && e.getY() < 396) {
                 common_view.game_over = false;
@@ -327,6 +331,9 @@ public class BombermanGame extends JPanel implements Runnable, KeyListener, Mous
                 create_Map(common_view.level);
                 common_view.bomber = null;
                 common_view.bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
+                common_view.sound_game_over.stop_sound();
+                common_view.sound_game.is_play_music = false;
+                common_view.sound_game.play_sound();
             }
         }
     }

@@ -1,16 +1,16 @@
 ######################
-#   # xz # xz c#z#c  #
-#c ## xc # zv  #cv#  #
-#z  x #zc  v#z xxc  c#
-#v  c # xc # cvz #  ##
-##  z xx #cv ##zx  xc#
-# zxc#z  zxv # #cv   #
-#z #c  vzxzx  c# xc ##
-#x  # z  #  xx #czx v#
-#v  c  # xv#  z #x   #
-##  ##  zxc#v z#c   ##
-#xc z# x #  xc #  cv #
-#z ##cv  #x  zx ##  ##
-#   v #zxc # zxcxc   #
-#  v#   ## xcv  z#z  #
+#  z # x # c # v #z  #
+# #v# # # # # # # #  #
+#x c  v z x c v z c ##
+##x#c#z#v#z#x#c#v#z# #
+#  z  x c v z x c v  #
+# #z# # # # # # # #  #
+#x c  v   z   x   c ##
+##v# #x# #z# #c# #v# #
+#x c  v   z   x   c ##
+# #z# # # # # # # #  #
+#  z  x   c   v   z  #
+##v# #x# #z# #c# #v# #
+#x c  v   z   x   c ##
+#  z # x # c # v #z  #
 ######################

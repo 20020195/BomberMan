@@ -2,20 +2,18 @@ package common;
 
 import entities.Bomb;
 import entities.Bomber;
+import entities.Enemy;
 import entities.Item;
 import graphics.Sprite;
+import sound.SoundEffect;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
 
 public class common_view {
     public static JFrame w = new JFrame("Bomberman");
-
-    public static JButton button = new JButton("Ok");
 
     public static final int TILESIZE = 16;
     public static final int ROWS = 16;
@@ -35,8 +33,9 @@ public class common_view {
     public static char[][] scene = new char[16][22];
     public static int[][] has_item = new int[16][22];
 
+    public static SoundEffect sound_game;
+    public static SoundEffect sound_game_over;
 
-    // public static boolean right = false, left = false, up = false, down = false;
     public static boolean menu = true;
     public static boolean is_playing = false;
     public static boolean how_to_play = false;
@@ -47,8 +46,11 @@ public class common_view {
     public static String level;
 
     public static Bomber bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
-    public static Sprite sprite = new Sprite();
+    public static Enemy enemy = new Enemy(common_view.TILESIZE * 2, common_view.TILESIZE * 6);
 
     public static ArrayList<Bomb> bombs = new ArrayList<Bomb>();
     public static ArrayList<Item> items = new ArrayList<Item>();
+
+    public static Sprite sprite = new Sprite();
+
 }
