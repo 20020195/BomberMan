@@ -42,12 +42,16 @@ public class common_view {
     public static boolean choose_map = false;
     public static boolean pause = false;
     public static boolean game_over = false;
+    public static boolean off_volume = false;
 
     public static String level;
 
-    public static Bomber bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
-    public static Enemy enemy = new Enemy(common_view.TILESIZE * 2, common_view.TILESIZE * 6);
+    public static Bomber bomber;
+    public static Enemy enemy1;
+    public static Enemy enemy2;
+    public static Enemy enemy3;
 
+    public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     public static ArrayList<Bomb> bombs = new ArrayList<Bomb>();
     public static ArrayList<Item> items = new ArrayList<Item>();
 
