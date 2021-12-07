@@ -1,8 +1,10 @@
 package sound;
 
-import java.io.File;
+import common.*;
 
+import java.io.File;
 import javax.sound.sampled.*;
+
 
 public class SoundEffect {
     public File file;
@@ -17,7 +19,7 @@ public class SoundEffect {
     }
 
     public void play_sound() {
-        if (!is_play_music) {
+        if (!is_play_music && !common_view.off_volume) {
             try {
                 this.audioInputStream = AudioSystem.getAudioInputStream(this.file);
                 this.clip = AudioSystem.getClip();

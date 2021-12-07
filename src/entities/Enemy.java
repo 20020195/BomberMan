@@ -3,9 +3,13 @@ package entities;
 import common.*;
 import sound.SoundEffect;
 
+import java.awt.image.BufferedImage;
+
 public class Enemy extends Bomber {
-    public int steps = 0;
-    public int random = 0;
+    private BufferedImage img_enemy;
+
+    private int steps = 0;
+    private int random = 0;
 
     public Enemy(int xUnit, int yUnit) {
         super(xUnit, yUnit);
@@ -20,8 +24,8 @@ public class Enemy extends Bomber {
             steps = 64;
         }
         if (random == 0) {
-            common_view.enemy.right = true;
-            common_view.sprite.enemy = common_view.sprite.enemyAnimRight[this.indexAnimPlayer];
+            right = true;
+            img_enemy = common_view.sprite.enemyAnimRight[this.indexAnimPlayer];
             if(isFreeR(x, y, scene)) {
                 this.x += 1;
                 this.moving = true;
@@ -33,8 +37,8 @@ public class Enemy extends Bomber {
             }
         }
         else if (random == 1) {
-            common_view.enemy.left = true;
-            common_view.sprite.enemy = common_view.sprite.enemyAnimLeft[this.indexAnimPlayer];
+            left = true;
+            img_enemy = common_view.sprite.enemyAnimLeft[this.indexAnimPlayer];
             if (isFreeL(x, y, scene)) {
                 this.x -= 1;
                 this.moving = true;
@@ -46,8 +50,8 @@ public class Enemy extends Bomber {
             }
         }
         if (random == 2) {
-            common_view.enemy.up = true;
-            common_view.sprite.enemy = common_view.sprite.enemyAnimUp[this.indexAnimPlayer];
+            up = true;
+            img_enemy = common_view.sprite.enemyAnimUp[this.indexAnimPlayer];
             if (isFreeU(x, y, scene)) {
                 this.y -= 1;
                 this.moving = true;
@@ -58,8 +62,8 @@ public class Enemy extends Bomber {
                 steps =0;
             }
         } else if (random == 3) {
-            common_view.enemy.down = true;
-            common_view.sprite.enemy = common_view.sprite.enemyAnimDown[this.indexAnimPlayer];
+            down = true;
+            img_enemy = common_view.sprite.enemyAnimDown[this.indexAnimPlayer];
             if (isFreeD(x, y, scene)) {
                 this.y += 1;
                 this.moving = true;
@@ -72,7 +76,7 @@ public class Enemy extends Bomber {
         } else if (random == 4) {
             this.moving = false;
             steps = 0;
-            common_view.sprite.enemy = common_view.sprite.enemyAnimDown[0];
+            img_enemy = common_view.sprite.enemyAnimDown[0];
             random = (int) (Math.random() * 5);
         }
 
@@ -86,5 +90,9 @@ public class Enemy extends Bomber {
                 }
             }
         }
+    }
+
+    public BufferedImage getImg_enemy() {
+        return img_enemy;
     }
 }

@@ -3,24 +3,27 @@ package entities;
 import common.*;
 import sound.SoundEffect;
 
+import java.awt.image.BufferedImage;
+
 public class Bomber extends Entity {
-    public int speed = 2;
+    protected int speed = 2;
+    private BufferedImage img_player;
 
-    public boolean moving = false;
-    public boolean right = false;
-    public boolean left = false;
-    public boolean up = false;
-    public boolean down = false;
+    protected boolean moving = false;
+    protected boolean right = false;
+    protected boolean left = false;
+    protected boolean up = false;
+    protected boolean down = false;
 
-    public int framePlayer = 0;
-    public int intervalPlayer = 5;
-    public int indexAnimPlayer = 0;
+    protected int framePlayer = 0;
+    protected int intervalPlayer = 5;
+    protected int indexAnimPlayer = 0;
 
-    public boolean no_dead = false;
-    public long time_start_boost;
-    public long time_start_no_dead;
+    protected boolean no_dead = false;
+    protected long time_start_boost;
+    protected long time_start_no_dead;
 
-    public SoundEffect sound_foot;
+    protected SoundEffect sound_foot;
 
     public Bomber(int xUnit, int yUnit) {
         super(xUnit, yUnit);
@@ -28,30 +31,30 @@ public class Bomber extends Entity {
     }
 
     public void eat_item_speed() {
-        common_view.bomber.speed = 4;
-        common_view.bomber.time_start_boost = System.currentTimeMillis();
+        speed = 4;
+        time_start_boost = System.currentTimeMillis();
     }
 
     public void eat_item_nodead() {
-        common_view.bomber.no_dead = true;
-        common_view.bomber.time_start_no_dead = System.currentTimeMillis();
+        no_dead = true;
+        time_start_no_dead = System.currentTimeMillis();
     }
 
     public void update(int tileSize, int SCALE, char[][] scene) {
         moving = false;
-        if (common_view.bomber.right && isFreeR(x , y, scene)) {
+        if (right && isFreeR(x , y, scene)) {
             this.x += speed;
             moving = true;
         }
-        if (common_view.bomber.left && isFreeL(x , y, scene)) {
+        if (left && isFreeL(x , y, scene)) {
             this.x -= speed;
             moving = true;
         }
-        if (common_view.bomber.up && isFreeU(x, y , scene)) {
+        if (up && isFreeU(x, y , scene)) {
             this.y -= speed;
             moving = true;
         }
-        if (common_view.bomber.down && isFreeD(x, y , scene)) {
+        if (down && isFreeD(x, y , scene)) {
             this.y += speed;
             moving = true;
         }
@@ -67,19 +70,19 @@ public class Bomber extends Entity {
                 }
             }
 
-            if (common_view.bomber.right) {
-                common_view.sprite.player = common_view.sprite.playerAnimRight[indexAnimPlayer];
-            } else if (common_view.bomber.left) {
-                common_view.sprite.player = common_view.sprite.playerAnimLeft[indexAnimPlayer];
-            } else if (common_view.bomber.up) {
-                common_view.sprite.player = common_view.sprite.playerAnimUp[indexAnimPlayer];
-            } else if (common_view.bomber.down) {
-                common_view.sprite.player = common_view.sprite.playerAnimDown[indexAnimPlayer];
+            if (right) {
+                img_player = common_view.sprite.playerAnimRight[indexAnimPlayer];
+            } else if (left) {
+                img_player = common_view.sprite.playerAnimLeft[indexAnimPlayer];
+            } else if (up) {
+                img_player = common_view.sprite.playerAnimUp[indexAnimPlayer];
+            } else if (down) {
+                img_player = common_view.sprite.playerAnimDown[indexAnimPlayer];
             } else {
-                common_view.sprite.player = common_view.sprite.playerAnimDown[1];
+                img_player = common_view.sprite.playerAnimDown[1];
             }
         } else {
-            common_view.sprite.player = common_view.sprite.playerAnimDown[0];
+            img_player = common_view.sprite.playerAnimDown[0];
             sound_foot.stop_sound();
         }
         if (System.currentTimeMillis() - common_view.bomber.time_start_boost > 4000) {
@@ -101,16 +104,17 @@ public class Bomber extends Entity {
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
+
                 if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '9' || scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') {
                     if (scene[y1][x1 + 1] == '1') {
                         scene[y1][x1 + 1] = ' ';
                         common_view.has_item[y1][x1 + 1] = 0;
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 + 1] == '2') {
                         scene[y1][x1 + 1] = ' ';
                         common_view.has_item[y1][x1 + 1] = 0;
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                 } else {
@@ -121,66 +125,72 @@ public class Bomber extends Entity {
                 int x1 = x / size;
                 if ((scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') && scene[y1 + 1][x1 + 1] == ' ') {
                     if (scene[y1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
+
                     scene[y1][x1 + 1] = ' ';
                     common_view.has_item[y1][x1 + 1] = 0;
                 }
                 else if (scene[y1][x1 + 1] == ' ' && (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2')) {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
+
                     scene[y1 + 1][x1 + 1] = ' ';
                     common_view.has_item[y1 + 1][x1 + 1] = 0;
                 }
                 else if ((scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') && scene[y1 + 1][x1 + 1] == '9') {
                     if (scene[y1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
+
                     scene[y1][x1 + 1] = ' ';
                     common_view.has_item[y1][x1 + 1] = 0;
                 }
                 else if (scene[y1][x1 + 1] == '9' && (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2')) {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
+
                     scene[y1 + 1][x1 + 1] = ' ';
                     common_view.has_item[y1 + 1][x1 + 1] = 0;
                 }
                 else if ((scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') && (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2')) {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     if (scene[y1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
+
+
                     scene[y1][x1 + 1] = ' ';
                     common_view.has_item[y1][x1 + 1] = 0;
                     scene[y1 + 1][x1 + 1] = ' ';
-                    common_view.has_item[y1][x1 + 1] = 0;
+                    common_view.has_item[y1 + 1][x1 + 1] = 0;
                 } else if (scene[y1][x1 + 1] == ' ' && scene[y1 + 1][x1 + 1] == ' ') {
                     a = true;
                 } else if (scene[y1][x1 + 1] == ' ' && scene[y1 + 1][x1 + 1] == '9') {
@@ -209,15 +219,16 @@ public class Bomber extends Entity {
                     if (scene[y1][x1-1] == '1') {
                         scene[y1][x1-1] = ' ';
                         common_view.has_item[y1][x1 - 1] = 0;
-                        common_view.bomber.speed = 4;
-                        common_view.bomber.time_start_boost = System.currentTimeMillis();
+                        this.speed = 4;
+                        this.time_start_boost = System.currentTimeMillis();
                     }
                     if (scene[y1][x1-1] == '2') {
                         scene[y1][x1-1] = ' ';
                         common_view.has_item[y1][x1 - 1] = 0;
-                        common_view.bomber.no_dead = true;
-                        common_view.bomber.time_start_no_dead = System.currentTimeMillis();
+                        this.no_dead = true;
+                        this.time_start_no_dead = System.currentTimeMillis();
                     }
+
                     a = true;
                 } else {
                     a = false;
@@ -227,61 +238,67 @@ public class Bomber extends Entity {
                 int x1 = x / size;
                 if ((scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') && scene[y1 + 1][x1 - 1] == ' ') {
                     if (scene[y1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1][x1 - 1] = ' ';
                     common_view.has_item[y1][x1 - 1] = 0;
                 }
                 if (scene[y1][x1 - 1] == ' ' && (scene[y1 + 1][x1 - 1] == '1' || scene[y1 + 1][x1 - 1] == '2')) {
                     if (scene[y1 + 1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 + 1][x1 - 1] = ' ';
                     common_view.has_item[y1 + 1][x1 - 1] = 0;
                 }
                 if ((scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') && scene[y1 + 1][x1 - 1] == '9') {
                     if (scene[y1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1][x1 - 1] = ' ';
                     common_view.has_item[y1][x1 - 1] = 0;
                 }
                 if (scene[y1][x1 - 1] == '9' && (scene[y1 + 1][x1 - 1] == '1' || scene[y1 + 1][x1 - 1] == '2')) {
                     if (scene[y1 + 1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 + 1][x1 - 1] = ' ';
                     common_view.has_item[y1 + 1][x1 - 1] = 0;
                 }
                 if ((scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') && (scene[y1 + 1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2')) {
                     if (scene[y1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     if (scene[y1 + 1][x1 - 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 - 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
+
                     a = true;
                     scene[y1][x1 - 1] = ' ';
                     common_view.has_item[y1][x1 - 1] = 0;
@@ -311,15 +328,16 @@ public class Bomber extends Entity {
                     if (scene[y1 - 1][x1] == '1') {
                         scene[y1 - 1][x1] = ' ';
                         common_view.has_item[y1 - 1][x1] = 0;
-                        common_view.bomber.speed = 4;
-                        common_view.bomber.time_start_boost = System.currentTimeMillis();
+                        this.speed = 4;
+                        this.time_start_boost = System.currentTimeMillis();
                     }
                     if (scene[y1 - 1][x1] == '2') {
                         scene[y1 - 1][x1] = ' ';
                         common_view.has_item[y1 - 1][x1] = 0;
-                        common_view.bomber.no_dead = true;
-                        common_view.bomber.time_start_no_dead = System.currentTimeMillis();
+                        this.no_dead = true;
+                        this.time_start_no_dead = System.currentTimeMillis();
                     }
+
                     a = true;
                 } else {
                     a = false;
@@ -329,64 +347,66 @@ public class Bomber extends Entity {
                 int x1 = x / size;
                 if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && scene[y1 - 1][x1] == ' ' ) {
                     if (scene[y1 - 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
-                    a = true;
-                    scene[y1 + 1][x1 - 1] = ' ';
-                    common_view.has_item[y1 + 1][x1 - 1] = 0;
+
                     a = true;
                     scene[y1 - 1][x1 + 1] = ' ';
                     common_view.has_item[y1 - 1][x1 + 1] = 0;
                 }
                 if (scene[y1 - 1][x1 + 1] == ' ' && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2') ) {
                     if (scene[y1 - 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 - 1][x] = ' ';
                     common_view.has_item[y1 - 1][x1] = 0;
                 }
                 if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && scene[y1 - 1][x1] == '9' ) {
                     if (scene[y1 - 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 - 1][x1 + 1] = ' ';
                     common_view.has_item[y1 - 1][x1 + 1] = 0;
                 }
                 if (scene[y1 - 1][x1 + 1] == '9' && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2')) {
                     if (scene[y1 - 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 - 1][x1] = ' ';
                     common_view.has_item[y1 - 1][x1] = 0;
                 }
                 if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2') ) {
                     if (scene[y1 - 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     if (scene[y1 - 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 - 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
+
                     a = true;
                     scene[y1 - 1][x1 + 1] = ' ';
                     common_view.has_item[y1 - 1][x1 + 1] = 0;
@@ -416,14 +436,16 @@ public class Bomber extends Entity {
                     if (scene[y1 + 1][x1] == '1') {
                         scene[y1 + 1][x1] = ' ';
                         common_view.has_item[y1 + 1][x1] = 0;
-                        common_view.bomber.speed = 4;
-                        common_view.bomber.time_start_boost = System.currentTimeMillis();
+
+                        this.speed = 4;
+                        this.time_start_boost = System.currentTimeMillis();
                     }
                     if (scene[y1 + 1][x1] == '2') {
                         scene[y1 + 1][x1] = ' ';
                         common_view.has_item[y1 + 1][x1] = 0;
-                        common_view.bomber.no_dead = true;
-                        common_view.bomber.time_start_no_dead = System.currentTimeMillis();
+
+                        this.no_dead = true;
+                        this.time_start_no_dead = System.currentTimeMillis();
                     }
                     a = true;
                 } else {
@@ -434,65 +456,71 @@ public class Bomber extends Entity {
                 int x1 = x / size;
                 if ((scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') && scene[y1 + 1][x1] == ' ') {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                     scene[y1 + 1][x1 + 1] = ' ';
+
                     common_view.has_item[y1 + 1][x1 + 1] = 0;
                 }
                 if (scene[y1 + 1][x1 + 1] == ' ' && (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2')) {
                     if (scene[y1 + 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                     scene[y1 + 1][x1] = ' ';
+
                     common_view.has_item[y1 + 1][x1] = 0;
                 }
                 if ((scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') && scene[y1 + 1][x1] == '9' ) {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                     scene[y1 + 1][x1 + 1] = ' ';
+
                     common_view.has_item[y1 + 1][x1 + 1] = 0;
                 }
                 if (scene[y1 + 1][x1 + 1] == '9' && (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2') ) {
                     if (scene[y1 + 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                     scene[y1 + 1][x1] = ' ';
+
                     common_view.has_item[y1 + 1][x1] = 0;
                 }
                 if ((scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') && (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2') ) {
                     if (scene[y1 + 1][x1 + 1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1 + 1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     if (scene[y1 + 1][x1] == '1') {
-                        common_view.bomber.eat_item_speed();
+                        this.eat_item_speed();
                     }
                     if (scene[y1 + 1][x1] == '2') {
-                        common_view.bomber.eat_item_nodead();
+                        this.eat_item_nodead();
                     }
                     a = true;
                     scene[y1 + 1][x1] = ' ';
+
                     common_view.has_item[y1 + 1][x1] = 0;
                     scene[y1 + 1][x1 + 1] = ' ';
+
                     common_view.has_item[y1 + 1][x1 + 1] = 0;
                 }
                 if (scene[y1 + 1][x1 + 1] == ' ' && scene[y1 + 1][x1] == ' ' ) a = true;
@@ -501,6 +529,30 @@ public class Bomber extends Entity {
                 if (scene[y1 + 1][x1 + 1] == '9' && scene[y1 + 1][x1] == '9' ) a = true;
             }
         } return a;
+    }
+
+    public BufferedImage getImg_player() {
+        return img_player;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    public boolean isNo_dead() {
+        return no_dead;
     }
 }
 

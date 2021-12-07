@@ -2,10 +2,14 @@ package entities;
 
 import common.common_view;
 
+import java.awt.image.BufferedImage;
+
 public class Item extends Entity {
-    public int frameItem = 0;
-    public int intervalItem = 12;
-    public int indexAnimItem = 0;
+    private BufferedImage img_item;
+
+    private int frameItem = 0;
+    private int intervalItem = 12;
+    private int indexAnimItem = 0;
 
     public Item(int xUnit, int yUnit) {
         super(xUnit, yUnit);
@@ -24,10 +28,22 @@ public class Item extends Entity {
     }
 
     public void update() {
-        if (common_view.items.size() != 0) {
-            for (int i = 0; i < common_view.items.size(); i++) {
-                animItem(common_view.items.get(i));
-            }
-        }
+        animItem(this);
+    }
+
+    public BufferedImage getImg_item() {
+        return img_item;
+    }
+
+    public void setImg_item(BufferedImage img_item) {
+        this.img_item = img_item;
+    }
+
+    public int getIndexAnimItem() {
+        return indexAnimItem;
+    }
+
+    public void setIndexAnimItem(int indexAnimItem) {
+        this.indexAnimItem = indexAnimItem;
     }
 }

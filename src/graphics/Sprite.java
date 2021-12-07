@@ -118,7 +118,6 @@ public class Sprite {
                 item2[i + 3] = spriteSheet.getSubimage(11 * size, (i + 5) * size, size, size);
             }
 
-
             blockTile = spriteSheet.getSubimage(5 * size, 14 * size, size, size);
             grass = spriteSheet.getSubimage(6 * size, size, size, size);
             brick = spriteSheet.getSubimage(7 * size, 0, size, size);
