@@ -2,48 +2,47 @@ package entities;
 
 import common.common_view;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Item extends Entity {
-    private BufferedImage img_item;
-
-    private int frameItem = 0;
-    private int intervalItem = 12;
-    private int indexAnimItem = 0;
-
+    private String type_item;
     public Item(int xUnit, int yUnit) {
         super(xUnit, yUnit);
     }
 
-    public void animItem(Item item) {
-        item.frameItem++;
-        if (item.frameItem == item.intervalItem) {
-            item.frameItem = 0;
-            item.indexAnimItem++;
+    public void animItem() {
+        if (type_item.equals("item_deadth")) {
+            image = common_view.sprite.item_deadth[this.getIndexAnim()];
+        } else if (type_item.equals("item_speed")) {
+            image = common_view.sprite.item_speed[this.getIndexAnim()];
 
-            if (item.indexAnimItem > 5) {
-                item.indexAnimItem = 0;
+        }
+        frame++;
+        if (frame == interval) {
+            frame = 0;
+            indexAnim++;
+
+            if (indexAnim > 1) {
+                indexAnim = 0;
             }
         }
     }
 
     public void update() {
-        animItem(this);
+        animItem();
     }
 
-    public BufferedImage getImg_item() {
-        return img_item;
+    @Override
+    public void draw(Graphics2D g2, BufferedImage image, int x, int y) {
+        g2.drawImage(this.getImage(), this.getX(), this.getY(), common_view.size, common_view.size, null);
     }
 
-    public void setImg_item(BufferedImage img_item) {
-        this.img_item = img_item;
+    public String getType_item() {
+        return type_item;
     }
 
-    public int getIndexAnimItem() {
-        return indexAnimItem;
-    }
-
-    public void setIndexAnimItem(int indexAnimItem) {
-        this.indexAnimItem = indexAnimItem;
+    public void setType_item(String type_item) {
+        this.type_item = type_item;
     }
 }

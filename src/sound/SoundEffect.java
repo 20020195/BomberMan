@@ -39,4 +39,10 @@ public class SoundEffect {
         }
     }
 
+    public void loop() {
+        if (is_play_music && !common_view.off_volume) {
+            this.clip.loop(100);
+        }
+    }
+
 }
