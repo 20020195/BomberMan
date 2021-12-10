@@ -3,11 +3,7 @@ package entities;
 import common.*;
 import sound.SoundEffect;
 
-import java.awt.image.BufferedImage;
-
 public class Enemy extends Bomber {
-    private BufferedImage img_enemy;
-
     private int steps = 0;
     private int random = 0;
 
@@ -16,83 +12,90 @@ public class Enemy extends Bomber {
         sound_foot = new SoundEffect("res/audio/sound_foot.wav");
     }
 
-    public void update1(int tileSize, int SCALE, char[][] scene) {
-        this.moving = false;
-
-        if (steps <= 0) {
-            random = (int) (Math.random() * 5);
-            steps = 64;
-        }
-        if (random == 0) {
-            right = true;
-            img_enemy = common_view.sprite.enemyAnimRight[this.indexAnimPlayer];
-            if(isFreeR(x, y, scene)) {
-                this.x += 1;
-                this.moving = true;
-                steps -= speed;
+    public void update() {
+        if (isDie()) {
+            interval = 8;
+            if (indexAnim < 3) {
+                image = common_view.sprite.enemyAnimDead[indexAnim];
+                frame++;
+                if (frame > interval) {
+                    frame = 0;
+                    indexAnim++;
+                }
+            } else {
+                common_view.enemies.remove(this);
             }
-            if (!isFreeR(x, y, scene)) {
-                this.moving = false;
-                steps = 0;
-            }
-        }
-        else if (random == 1) {
-            left = true;
-            img_enemy = common_view.sprite.enemyAnimLeft[this.indexAnimPlayer];
-            if (isFreeL(x, y, scene)) {
-                this.x -= 1;
-                this.moving = true;
-                steps -= speed;
-            }
-            if (!isFreeL(x, y, scene)) {
-                this.moving = false;
-                steps = 0;
-            }
-        }
-        if (random == 2) {
-            up = true;
-            img_enemy = common_view.sprite.enemyAnimUp[this.indexAnimPlayer];
-            if (isFreeU(x, y, scene)) {
-                this.y -= 1;
-                this.moving = true;
-                steps -= speed;
-            }
-            if (!isFreeU(x, y, scene)) {
-                this.moving = false;
-                steps =0;
-            }
-        } else if (random == 3) {
-            down = true;
-            img_enemy = common_view.sprite.enemyAnimDown[this.indexAnimPlayer];
-            if (isFreeD(x, y, scene)) {
-                this.y += 1;
-                this.moving = true;
-                steps -= speed;
-            }
-            if (!isFreeD(x, y, scene)) {
-                this.moving = false;
-                steps =0;
-            }
-        } else if (random == 4) {
+        } else {
             this.moving = false;
-            steps = 0;
-            img_enemy = common_view.sprite.enemyAnimDown[0];
-            random = (int) (Math.random() * 5);
-        }
+            if (steps <= 0) {
+                random = (int) (Math.random() * 5);
+                steps = 64;
+            }
+            if (random == 0) {
+                right = true;
+                image = common_view.sprite.enemyAnimRight[this.indexAnim];
+                if (isFreeR(x, y)) {
+                    this.x += 1;
+                    this.moving = true;
+                    steps -= speed;
+                }
+                if (!isFreeR(x, y)) {
+                    this.moving = false;
+                    steps = 0;
+                }
+            } else if (random == 1) {
+                left = true;
+                image = common_view.sprite.enemyAnimLeft[this.indexAnim];
+                if (isFreeL(x, y)) {
+                    this.x -= 1;
+                    this.moving = true;
+                    steps -= speed;
+                }
+                if (!isFreeL(x, y)) {
+                    this.moving = false;
+                    steps = 0;
+                }
+            } else if (random == 2) {
+                up = true;
+                image = common_view.sprite.enemyAnimUp[this.indexAnim];
+                if (isFreeU(x, y)) {
+                    this.y -= 1;
+                    this.moving = true;
+                    steps -= speed;
+                }
+                if (!isFreeU(x, y)) {
+                    this.moving = false;
+                    steps = 0;
+                }
+            } else if (random == 3) {
+                down = true;
+                image = common_view.sprite.enemyAnimDown[this.indexAnim];
+                if (isFreeD(x, y)) {
+                    this.y += 1;
+                    this.moving = true;
+                    steps -= speed;
+                }
+                if (!isFreeD(x, y)) {
+                    this.moving = false;
+                    steps = 0;
+                }
+            } else if (random == 4) {
+                this.moving = false;
+                steps = 0;
+                image = common_view.sprite.enemyAnimDown[0];
+                random = (int) (Math.random() * 5);
+            }
 
-        if (this.moving) {
-            this.framePlayer++;
-            if (this.framePlayer > this.intervalPlayer) {
-                this.framePlayer = 0;
-                this.indexAnimPlayer++;
-                if (this.indexAnimPlayer > 2) {
-                    this.indexAnimPlayer = 0;
+            if (this.moving) {
+                this.frame++;
+                if (this.frame > this.interval) {
+                    this.frame = 0;
+                    this.indexAnim++;
+                    if (this.indexAnim > 2) {
+                        this.indexAnim = 0;
+                    }
                 }
             }
         }
-    }
-
-    public BufferedImage getImg_enemy() {
-        return img_enemy;
     }
 }

@@ -4,7 +4,10 @@ import entities.Bomb;
 import entities.Bomber;
 import entities.Enemy;
 import entities.Item;
+import event.HandleKey;
+import event.HandleMouse;
 import graphics.Sprite;
+import map.Map;
 import sound.SoundEffect;
 
 import javax.swing.*;
@@ -23,6 +26,11 @@ public class common_view {
     public static final int WIDTH = (TILESIZE * SCALE) * COLUMNS;
     public static final int HEIGHT = (TILESIZE * SCALE) * ROWS;
 
+    public static final int size = TILESIZE * SCALE;
+
+    public static HandleMouse handleMouse;
+    public static HandleKey handleKey;
+
     public static BufferedImage view;
     public static BufferedImage view_menu;
     public static BufferedImage view_how_to_play;
@@ -30,8 +38,8 @@ public class common_view {
     public static BufferedImage view_pause;
     public static BufferedImage view_game_over;
 
-    public static char[][] scene = new char[16][22];
-    public static int[][] has_item = new int[16][22];
+    public static char[][] scene;
+    public static int[][] has_item;
 
     public static SoundEffect sound_game;
     public static SoundEffect sound_game_over;
@@ -41,10 +49,12 @@ public class common_view {
     public static boolean how_to_play = false;
     public static boolean choose_map = false;
     public static boolean pause = false;
+    public static boolean win_game = false;
     public static boolean game_over = false;
     public static boolean off_volume = false;
 
-    public static String level;
+    public static Map map;
+    public static ArrayList<String> passed_levels;
 
     public static Bomber bomber;
     public static Enemy enemy1;
