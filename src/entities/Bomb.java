@@ -1,6 +1,7 @@
 package entities;
 
 import common.common_view;
+import enemys.Enemy;
 import sound.SoundEffect;
 
 import java.awt.*;
@@ -26,7 +27,7 @@ public class Bomb extends Entity {
         public void animBomb() {
                 image = common_view.sprite.bombAnim[this.getIndexAnim()];
                 frame++;
-                if (frame == interval) {
+                if (frame > interval) {
                         frame = 0;
                         indexAnim++;
                         if (indexAnim > 2) {
@@ -40,7 +41,7 @@ public class Bomb extends Entity {
         }
 
         public boolean nguoicobinokhong() {
-                if (common_view.bomber.isNo_dead()) {
+                if (common_view.bomber.isNo_dead() && common_view.bomber.isDie()) {
                         return false;
                 }
                 int size = common_view.TILESIZE * common_view.SCALE;

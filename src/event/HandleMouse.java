@@ -1,8 +1,11 @@
 package event;
 
 import common.common_view;
+import enemys.Bat;
+import enemys.Ghost;
+import enemys.Venom;
 import entities.Bomber;
-import entities.Enemy;
+import enemys.Enemy;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,7 +24,9 @@ public class HandleMouse implements MouseListener {
     public void create_data_game() {
         common_view.map.create_Map(common_view.map.getLevel());
         common_view.bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
-
+        common_view.enemy1 = new Venom(common_view.TILESIZE * 20, common_view.TILESIZE * 1);
+        common_view.enemy2 = new Bat(common_view.TILESIZE * 1, common_view.TILESIZE * 14);
+        common_view.enemy3 = new Ghost(common_view.TILESIZE * 20, common_view.TILESIZE * 14);
         common_view.enemies.add(common_view.enemy1);
         common_view.enemies.add(common_view.enemy2);
         common_view.enemies.add(common_view.enemy3);
@@ -56,28 +61,28 @@ public class HandleMouse implements MouseListener {
             }
         } else if (common_view.choose_map) {   // if này đang ở trong chọn map
             if (check_position(e.getX(), e.getY(), 40, 110, 32, 110)) {
-                common_view.choose_map = false;
-                common_view.is_playing = true;
                 common_view.map.setLevel(1);
                 clear();
                 create_data_game();
+                common_view.choose_map = false;
+                common_view.is_playing = true;
             } else if (check_position(e.getX(), e.getY(), 170, 240, 32, 110)) {
                 if (!common_view.passed_levels.isEmpty()
-                        && common_view.passed_levels.get(common_view.passed_levels.size() - 1) == "1") {
-                    common_view.choose_map = false;
-                    common_view.is_playing = true;
+                        && common_view.passed_levels.get(common_view.passed_levels.size() - 1).compareTo("1") > 0) {
                     common_view.map.setLevel(2);
                     clear();
                     create_data_game();
+                    common_view.choose_map = false;
+                    common_view.is_playing = true;
                 }
             } else if (check_position(e.getX(), e.getY(), 300, 370, 32, 110)) {
                 if (!common_view.passed_levels.isEmpty()
-                        && common_view.passed_levels.get(common_view.passed_levels.size() - 1) == "2") {
-                    common_view.choose_map = false;
-                    common_view.is_playing = true;
+                        && common_view.passed_levels.get(common_view.passed_levels.size() - 1).compareTo("2") > 0) {
                     common_view.map.setLevel(3);
                     clear();
                     create_data_game();
+                    common_view.choose_map = false;
+                    common_view.is_playing = true;
                 }
             }
         } else if (common_view.pause) {

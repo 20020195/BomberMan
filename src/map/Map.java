@@ -1,7 +1,6 @@
 package map;
 
 import common.*;
-import entities.Enemy;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -42,11 +41,6 @@ public class Map {
                         common_view.has_item[i][j] = 0;
                         if (common_view.scene[i][j] == '#') {
                             common_view.has_item[i][j] = 2;
-                        } else if (common_view.scene[i][j] == '1') {
-                            common_view.enemy1 = new Enemy(common_view.TILESIZE * 18, common_view.TILESIZE * 1);
-                            common_view.enemy2 = new Enemy(common_view.TILESIZE * 1, common_view.TILESIZE * 12);
-                            common_view.enemy3 = new Enemy(common_view.TILESIZE * j, common_view.TILESIZE * i);
-                            common_view.scene[i][j] = ' ';
                         } else {
                             int random = (int) (Math.random() * 100 + 1);
                             if (random % 3 == 0) {

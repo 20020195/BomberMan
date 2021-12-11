@@ -36,10 +36,15 @@ public class Bomber extends Entity {
             common_view.menu = false;
             common_view.bomber.setDie(true);
             common_view.bomber.moving = false;
-            common_view.sound_game.stop_sound();
-            common_view.sound_game_over.is_play_music = false;
-            common_view.sound_game_over.play_sound();
-        } else {
+            if (!common_view.sound_game_over.is_play_music) {
+                if (sound_foot.is_play_music) {
+                    sound_foot.stop_sound();
+                }
+                common_view.sound_game.stop_sound();
+                common_view.sound_game_over.is_play_music = false;
+                common_view.sound_game_over.play_sound();
+            }
+        } else if (!isDie()) {
             moving = false;
             if (right && isFreeR(x, y)) {
                 this.x += speed;
@@ -90,20 +95,18 @@ public class Bomber extends Entity {
             if (System.currentTimeMillis() - common_view.bomber.time_start_no_dead > 12000000) {
                 common_view.bomber.no_dead = false;
             }
-
-            if (isDie()) {
-                interval = 12;
-                if (indexAnim < 3) {
-                    image = common_view.sprite.playerAnimDead[indexAnim];
-                    frame++;
-                    if (frame > interval) {
-                        frame = 0;
-                        indexAnim++;
-                    }
-                } else {
-                    common_view.is_playing = false;
-                    common_view.game_over = true;
+        } else if (isDie()) {
+            interval = 12;
+            if (indexAnim < 3) {
+                image = common_view.sprite.playerAnimDead[indexAnim];
+                frame++;
+                if (frame > interval) {
+                    frame = 0;
+                    indexAnim++;
                 }
+            } else {
+                common_view.is_playing = false;
+                common_view.game_over = true;
             }
         }
         if (common_view.enemies.isEmpty()) {
@@ -168,12 +171,12 @@ public class Bomber extends Entity {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        for (int i = 0; i < common_view.bombs.size(); i++) {
+/*        for (int i = 0; i < common_view.bombs.size(); i++) {
             if (x + size + speed > common_view.bombs.get(i).getX() && x < common_view.bombs.get(i).getX() &&
                     y > common_view.bombs.get(i).getY() - size && y > common_view.bombs.get(i).getY() + size) {
                 return false;
             }
-        }
+        }*/
         if (x + speed > scene[0].length * size) {
             return false;
         } else {
@@ -219,12 +222,12 @@ public class Bomber extends Entity {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        for (int i = 0; i < common_view.bombs.size(); i++) {
+/*        for (int i = 0; i < common_view.bombs.size(); i++) {
             if (x - speed < common_view.bombs.get(i).getX()+size && x > common_view.bombs.get(i).getX() &&
                     y > common_view.bombs.get(i).getY() - size && y > common_view.bombs.get(i).getY() + size) {
                 return false;
             }
-        }
+        }*/
         if (x - speed < size) {
             return false;
         } else {
@@ -274,12 +277,12 @@ public class Bomber extends Entity {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        for (int i = 0; i < common_view.bombs.size(); i++) {
+/*        for (int i = 0; i < common_view.bombs.size(); i++) {
             if (y - speed < common_view.bombs.get(i).getY() + size && y > common_view.bombs.get(i).getY() &&
                     x > common_view.bombs.get(i).getX() - size && x > common_view.bombs.get(i).getX() + size) {
                 return false;
             }
-        }
+        }*/
         if (y - speed < size) {
             return false;
         } else {
@@ -329,12 +332,12 @@ public class Bomber extends Entity {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        for (int i = 0; i < common_view.bombs.size(); i++) {
+/*        for (int i = 0; i < common_view.bombs.size(); i++) {
             if (y + speed > common_view.bombs.get(i).getY() + size && y < common_view.bombs.get(i).getY() &&
                     x > common_view.bombs.get(i).getX() - size && x > common_view.bombs.get(i).getX() + size) {
                 return false;
             }
-        }
+        }*/
         if (y + speed > scene.length * size) {
             return false;
         } else {

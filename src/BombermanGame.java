@@ -1,4 +1,5 @@
 import common.*;
+import enemys.Enemy;
 import event.HandleKey;
 import event.HandleMouse;
 import map.Map;
@@ -49,6 +50,24 @@ public class BombermanGame extends JPanel implements Runnable {
             common_view.passed_levels = new ArrayList<String>();
             common_view.passed_levels = common_view.map.get_level_passed();
             common_view.sprite.load();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            common_view.sound_game = new SoundEffect("res/audio/theme.wav");
+            common_view.sound_game_over = new SoundEffect("res/audio/sound_game_over.wav");
+            common_view.sound_game.play_sound();
+            requestFocus();
+            start();
+            while (isRunning) {
+                update();
+                draw();
+                Thread.sleep(1000 / 60);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,23 +158,5 @@ public class BombermanGame extends JPanel implements Runnable {
         Graphics g = getGraphics();
         g.drawImage(common_view.view, 0, 0, common_view.WIDTH, common_view.HEIGHT, null);
         g.dispose();
-    }
-
-    @Override
-    public void run() {
-        try {
-            common_view.sound_game = new SoundEffect("res/audio/theme.wav");
-            common_view.sound_game_over = new SoundEffect("res/audio/sound_game_over.wav");
-            common_view.sound_game.play_sound();
-            requestFocus();
-            start();
-            while (isRunning) {
-                update();
-                draw();
-                Thread.sleep(1000 / 60);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -14,6 +14,18 @@ public class HandleKey implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_M) {
+            if (common_view.off_volume == false) {
+                common_view.off_volume = true;
+                if (common_view.sound_game.is_play_music) {
+                    common_view.sound_game.stop_sound();
+                }
+            } else {
+                common_view.off_volume = false;
+                common_view.sound_game.play_sound();
+            }
+        }
+
         if (common_view.is_playing) {
             if (!common_view.bomber.isDie()) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -60,17 +72,6 @@ public class HandleKey implements KeyListener {
             if (e.getKeyCode() == KeyEvent.VK_P) {
                 common_view.is_playing = false;
                 common_view.pause = true;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_M) {
-                if (common_view.off_volume == false) {
-                    common_view.off_volume = true;
-                    if (common_view.sound_game.is_play_music) {
-                        common_view.sound_game.stop_sound();
-                    }
-                } else {
-                    common_view.off_volume = false;
-                    common_view.sound_game.play_sound();
-                }
             }
         }
     }

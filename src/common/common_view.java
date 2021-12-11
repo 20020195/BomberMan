@@ -1,8 +1,9 @@
 package common;
 
+import enemys.Venom;
 import entities.Bomb;
 import entities.Bomber;
-import entities.Enemy;
+import enemys.Enemy;
 import entities.Item;
 import event.HandleKey;
 import event.HandleMouse;
