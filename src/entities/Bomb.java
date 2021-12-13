@@ -1,7 +1,7 @@
 package entities;
 
 import common.common_view;
-import enemys.Enemy;
+import enemys.*;
 import sound.SoundEffect;
 
 import java.awt.*;
@@ -41,7 +41,7 @@ public class Bomb extends Entity {
         }
 
         public boolean nguoicobinokhong() {
-                if (common_view.bomber.isNo_dead() && common_view.bomber.isDie()) {
+                if (common_view.bomber.isNo_dead()) {
                         return false;
                 }
                 int size = common_view.TILESIZE * common_view.SCALE;
@@ -174,6 +174,15 @@ public class Bomb extends Entity {
                                         if (botcobinokhong(common_view.enemies.get(j))) {
                                                 if (!common_view.enemies.get(j).isNo_dead()) {
                                                         common_view.enemies.get(j).setDie(true);
+                                                }
+                                        }
+                                }
+
+                                for (int j = 0; j < common_view.bosses.size(); j++) {
+                                        if (botcobinokhong(common_view.bosses.get(j))) {
+                                                common_view.bosses.get(j).setHP(common_view.bosses.get(j).getHP()-1);
+                                                if (common_view.bosses.get(j).getHP() == 0) {
+                                                        common_view.bosses.get(j).setDie(true);
                                                 }
                                         }
                                 }

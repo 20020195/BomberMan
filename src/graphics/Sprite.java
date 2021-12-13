@@ -24,6 +24,13 @@ public class Sprite {
     public BufferedImage[] venomAnimLeft;
     public BufferedImage[] venomAnimDead;
 
+    public BufferedImage boss;
+    public BufferedImage[] bossAnimUp;
+    public BufferedImage[] bossAnimDown;
+    public BufferedImage[] bossAnimRight;
+    public BufferedImage[] bossAnimLeft;
+    public BufferedImage[] bossAnimDead;
+
     public BufferedImage bat;
     public BufferedImage[] batAnimUp;
     public BufferedImage[] batAnimDown;
@@ -94,6 +101,13 @@ public class Sprite {
             batAnimLeft = new BufferedImage[3];
             batAnimDead = new BufferedImage[3];
 
+            boss = spriteSheet.getSubimage(2 * size, 0, size, size);
+            bossAnimUp = new BufferedImage[3];
+            bossAnimDown = new BufferedImage[3];
+            bossAnimRight = new BufferedImage[3];
+            bossAnimLeft = new BufferedImage[3];
+            bossAnimDead = new BufferedImage[3];
+
             ghost = spriteSheet.getSubimage(2 * size, 0, size, size);
             ghostAnimUp = new BufferedImage[3];
             ghostAnimDown = new BufferedImage[3];
@@ -136,6 +150,12 @@ public class Sprite {
                 ghostAnimDown[i] = spriteSheet.getSubimage((i + 8) * size, 10 * size, size, size);
                 ghostAnimDead[i] = spriteSheet.getSubimage(15 * size, i * size, size, size);
 
+                bossAnimLeft[i] = spriteSheet.getSubimage((i + 11) * size, 10 * size, size, size);
+                bossAnimRight[i] = spriteSheet.getSubimage((i + 8) * size, 11 * size, size, size);
+                bossAnimUp[i] = spriteSheet.getSubimage((i + 11) * size, 11 * size, size, size);
+                bossAnimDown[i] = spriteSheet.getSubimage((i + 8) * size, 10 * size, size, size);
+                bossAnimDead[i] = spriteSheet.getSubimage(15 * size, i * size, size, size);
+
                 bombAnim[i] = spriteSheet.getSubimage(i * size, 3 * size, size, size);
                 fontExplosion[i] = spriteSheet.getSubimage(0, (i + 4) * size, size, size);
                 upExplosion[i] = spriteSheet.getSubimage((i + 1) * size, 4 * size, size, size);
@@ -143,8 +163,8 @@ public class Sprite {
                 leftExplosion[i] = spriteSheet.getSubimage(0, (i + 7) * size, size, size);
                 rightExplosion[i] = spriteSheet.getSubimage(2 * size, (i + 7) * size, size, size);
 
-                item_deadth[i] = spriteSheet.getSubimage(10 * size, (i + 5) * size, size, size);
-                item_deadth[i + 3] = spriteSheet.getSubimage(11 * size, (i + 5) * size, size, size);
+                item_deadth[i] = spriteSheet.getSubimage(6 * size, 10 * size, size, size);
+                //item_deadth[i + 3] = spriteSheet.getSubimage(11 * size, (i + 5) * size, size, size);
             }
 
             item_speed[0] = spriteSheet.getSubimage(0 * size, 15 * size, size, size);

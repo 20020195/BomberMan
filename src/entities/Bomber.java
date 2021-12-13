@@ -9,12 +9,12 @@ import java.awt.image.BufferedImage;
 public class Bomber extends Entity {
     protected int speed = 2;
 
-    protected boolean moving = false;
+    public boolean moving = false;
     protected boolean right = false;
     protected boolean left = false;
     protected boolean up = false;
     protected boolean down = false;
-    protected boolean die = false;
+    public boolean die = false;
 
     protected boolean no_dead = false;
     protected long time_start_boost;
@@ -46,21 +46,57 @@ public class Bomber extends Entity {
             }
         } else if (!isDie()) {
             moving = false;
-            if (right && isFreeR(x, y)) {
-                this.x += speed;
-                moving = true;
+            if (right) {
+                if (isFreeR(x, y)) {
+                    this.x += speed;
+                    moving = true;
+                } else {
+                    if (y % 32 != 0 && y % 32 <= 16 && common_view.scene[y / 32][x / 32 + 1] == ' ') {
+                        this.y -= speed;
+                    }
+                    if (y % 32 != 0 && y % 32 > 16 && common_view.scene[y / 32 + 1][x / 32 + 1] == ' ') {
+                        this.y += speed;
+                    }
+                }
             }
-            if (left && isFreeL(x, y)) {
-                this.x -= speed;
-                moving = true;
+            if (left) {
+                if (isFreeL(x, y)) {
+                    this.x -= speed;
+                    moving = true;
+                } else {
+                    if (y % 32 != 0 && y % 32 <= 16 && common_view.scene[y / 32][x / 32 - 1] == ' ') {
+                        this.y -= speed;
+                    }
+                    if (y % 32 != 0 && y % 32 > 16 && common_view.scene[y / 32 + 1][x / 32 - 1] == ' ') {
+                        this.y += speed;
+                    }
+                }
             }
-            if (up && isFreeU(x, y)) {
-                this.y -= speed;
-                moving = true;
+            if (up) {
+                if (isFreeU(x, y)) {
+                    this.y -= speed;
+                    moving = true;
+                } else {
+                    if (x % 32 != 0 && x % 32 <= 16 && common_view.scene[y / 32 - 1][x / 32] == ' ') {
+                        this.x -= speed;
+                    }
+                    if (x % 32 != 0 && x % 32 > 16 && common_view.scene[y / 32 - 1][x / 32 + 1] == ' ') {
+                        this.x += speed;
+                    }
+                }
             }
-            if (down && isFreeD(x, y)) {
-                this.y += speed;
-                moving = true;
+            if (down) {
+                if (isFreeD(x, y)) {
+                    this.y += speed;
+                    moving = true;
+                } else {
+                    if (x % 32 != 0 && x % 32 <= 16 && common_view.scene[y / 32 + 1][x / 32] == ' ') {
+                        this.x -= speed;
+                    }
+                    if (x % 32 != 0 && x % 32 > 16 && common_view.scene[y / 32 + 1][x / 32 + 1] == ' ') {
+                        this.x += speed;
+                    }
+                }
             }
 
             if (moving) {
@@ -109,7 +145,7 @@ public class Bomber extends Entity {
                 common_view.game_over = true;
             }
         }
-        if (common_view.enemies.isEmpty()) {
+        if (common_view.bosses.isEmpty()) {
             if (common_view.bomber.getX() == 20 * common_view.size) {
                 if (common_view.bomber.getY() == 14 * common_view.size) {
                     common_view.win_game = true;
@@ -126,7 +162,7 @@ public class Bomber extends Entity {
     public void handle_eat_item(int x, int y) {
         char[][] scene = common_view.scene;
         if (scene[y][x] == '1') {
-            speed = 4;
+            this.speed = 4;
             time_start_boost = System.currentTimeMillis();
         }
         if (scene[y][x] == '2') {
@@ -171,22 +207,20 @@ public class Bomber extends Entity {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-/*        for (int i = 0; i < common_view.bombs.size(); i++) {
-            if (x + size + speed > common_view.bombs.get(i).getX() && x < common_view.bombs.get(i).getX() &&
-                    y > common_view.bombs.get(i).getY() - size && y > common_view.bombs.get(i).getY() + size) {
-                return false;
-            }
-        }*/
-        if (x + speed > scene[0].length * size) {
+        if (x + this.speed > scene[0].length * size) {
             return false;
         } else {
             if (x % size != 0) {
-                a = true;
+                if ((x + 2) % size == 0) {
+                    this.x += 2;
+                } else {
+                    a = true;
+                }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
 
-                if (scene[y1][x1 + 1] == ' '  || scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') {
+                if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') {
                     handle_eat_item(x1 + 1, y1);
                     a = true;
                 } else {
@@ -215,28 +249,27 @@ public class Bomber extends Entity {
                     a = true;
                 }
             }
-        } return a;
+        }
+        return a;
     }
 
     public boolean isFreeL(int x, int y) {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-/*        for (int i = 0; i < common_view.bombs.size(); i++) {
-            if (x - speed < common_view.bombs.get(i).getX()+size && x > common_view.bombs.get(i).getX() &&
-                    y > common_view.bombs.get(i).getY() - size && y > common_view.bombs.get(i).getY() + size) {
-                return false;
-            }
-        }*/
-        if (x - speed < size) {
+        if (x - this.speed < size) {
             return false;
         } else {
             if (x % size != 0) {
-                a = true;
+                if ((x - 2) % size == 0) {
+                    this.x -= 2;
+                } else {
+                    a = true;
+                }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1][x1-1] == ' ' || scene[y1][x1-1] == '1' || scene[y1][x1-1] == '2') {
+                if (scene[y1][x1 - 1] == ' ' || scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') {
                     handle_eat_item(x1 - 1, y1);
                     a = true;
                 } else {
@@ -270,24 +303,23 @@ public class Bomber extends Entity {
                     a = true;
                 }
             }
-        } return a;
+        }
+        return a;
     }
 
     public boolean isFreeU(int x, int y) {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-/*        for (int i = 0; i < common_view.bombs.size(); i++) {
-            if (y - speed < common_view.bombs.get(i).getY() + size && y > common_view.bombs.get(i).getY() &&
-                    x > common_view.bombs.get(i).getX() - size && x > common_view.bombs.get(i).getX() + size) {
-                return false;
-            }
-        }*/
         if (y - speed < size) {
             return false;
         } else {
             if (y % size != 0) {
-                a = true;
+                if ((y - 2) % size == 0) {
+                    this.y -= 2;
+                } else {
+                    a = true;
+                }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
@@ -316,33 +348,32 @@ public class Bomber extends Entity {
                     handle_eat_item(x1, y1 - 1);
                     a = true;
                 }
-                if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2') ) {
+                if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2')) {
                     handle_eat_item(x1 + 1, y1 - 1);
                     handle_eat_item(x1, y1 - 1);
                     a = true;
                 }
-                if (scene[y1 - 1][x1 + 1] == ' ' && scene[y1 - 1][x1] == ' ' ) {
+                if (scene[y1 - 1][x1 + 1] == ' ' && scene[y1 - 1][x1] == ' ') {
                     a = true;
                 }
             }
-        } return a;
+        }
+        return a;
     }
 
     public boolean isFreeD(int x, int y) {
         char[][] scene = common_view.scene;
         boolean a = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-/*        for (int i = 0; i < common_view.bombs.size(); i++) {
-            if (y + speed > common_view.bombs.get(i).getY() + size && y < common_view.bombs.get(i).getY() &&
-                    x > common_view.bombs.get(i).getX() - size && x > common_view.bombs.get(i).getX() + size) {
-                return false;
-            }
-        }*/
         if (y + speed > scene.length * size) {
             return false;
         } else {
             if (y % size != 0) {
-                a = true;
+                if ((y + 2) % size == 0) {
+                    this.y += 2;
+                } else {
+                    a = true;
+                }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
@@ -376,11 +407,12 @@ public class Bomber extends Entity {
                     handle_eat_item(x1, y1 + 1);
                     a = true;
                 }
-                if (scene[y1 + 1][x1 + 1] == ' ' && scene[y1 + 1][x1] == ' ' ) {
+                if (scene[y1 + 1][x1 + 1] == ' ' && scene[y1 + 1][x1] == ' ') {
                     a = true;
                 }
             }
-        } return a;
+        }
+        return a;
     }
 
     public void setRight(boolean right) {

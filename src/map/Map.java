@@ -39,7 +39,7 @@ public class Map {
                     for (int j = 0; j < line.length(); j++) {
                         common_view.scene[i][j] = line.charAt(j);
                         common_view.has_item[i][j] = 0;
-                        if (common_view.scene[i][j] == '#') {
+                        if (common_view.scene[i][j] == '#' || common_view.scene[i][j] == ' ') {
                             common_view.has_item[i][j] = 2;
                         } else {
                             int random = (int) (Math.random() * 100 + 1);

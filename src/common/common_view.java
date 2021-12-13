@@ -1,5 +1,6 @@
 package common;
 
+import enemys.Boss;
 import enemys.Venom;
 import entities.Bomb;
 import entities.Bomber;
@@ -61,8 +62,10 @@ public class common_view {
     public static Enemy enemy1;
     public static Enemy enemy2;
     public static Enemy enemy3;
+    public static Boss Boss;
 
     public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public static ArrayList<Boss> bosses = new ArrayList<Boss>();
     public static ArrayList<Bomb> bombs = new ArrayList<Bomb>();
     public static ArrayList<Item> items = new ArrayList<Item>();
 

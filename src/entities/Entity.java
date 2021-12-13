@@ -10,7 +10,6 @@ public abstract class Entity {
     protected int y;
 
     protected BufferedImage image;
-
     protected int frame = 0;
     protected int interval = 5;
     protected int indexAnim = 0;

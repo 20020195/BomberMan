@@ -93,6 +93,11 @@ public class BombermanGame extends JPanel implements Runnable {
                     common_view.bombs.get(i).update();
                 }
             }
+            if (common_view.bosses.size() > 0 && common_view.enemies.isEmpty()) {
+                for (int i = 0; i < common_view.bosses.size(); i++) {
+                    common_view.bosses.get(i).update();
+                }
+            }
             if (common_view.items.size() > 0) {
                 for (int i = 0; i < common_view.items.size(); i++) {
                     common_view.items.get(i).update();
@@ -137,6 +142,10 @@ public class BombermanGame extends JPanel implements Runnable {
                     enemy.draw(g2, enemy.getImage(), enemy.getX(), enemy.getY());
                 }
             } else {
+                if (!common_view.bosses.isEmpty()) {
+                    Enemy enemy = common_view.bosses.get(0);
+                    enemy.draw(g2, enemy.getImage(), enemy.getX(), enemy.getY());
+                }
                 g2.drawImage(common_view.sprite.portal, 20 * size, 14 * size, size, size, null);
             }
             if (common_view.bomber != null) {

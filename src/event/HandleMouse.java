@@ -1,11 +1,8 @@
 package event;
 
 import common.common_view;
-import enemys.Bat;
-import enemys.Ghost;
-import enemys.Venom;
+import enemys.*;
 import entities.Bomber;
-import enemys.Enemy;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,7 +23,9 @@ public class HandleMouse implements MouseListener {
         common_view.bomber = new Bomber(common_view.TILESIZE, common_view.TILESIZE);
         common_view.enemy1 = new Venom(common_view.TILESIZE * 20, common_view.TILESIZE * 1);
         common_view.enemy2 = new Bat(common_view.TILESIZE * 1, common_view.TILESIZE * 14);
-        common_view.enemy3 = new Ghost(common_view.TILESIZE * 20, common_view.TILESIZE * 14);
+        common_view.enemy3 = new Ghost(common_view.TILESIZE * 10, common_view.TILESIZE * 7);
+        common_view.Boss = new Boss(common_view.TILESIZE * 20, common_view.TILESIZE * 14);
+        common_view.bosses.add(common_view.Boss);
         common_view.enemies.add(common_view.enemy1);
         common_view.enemies.add(common_view.enemy2);
         common_view.enemies.add(common_view.enemy3);
