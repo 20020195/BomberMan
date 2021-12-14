@@ -1,6 +1,10 @@
 package map;
 
-import common.*;
+import common.common_view;
+import entities.enemys.Bat;
+import entities.enemys.Enemy;
+import entities.enemys.Ghost;
+import entities.enemys.Venom;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,12 +17,8 @@ public class Map {
 
     }
 
-    public Map(int level) {
-        this.level = level;
-    }
-
     public void create_Map(int level) {
-        string_level = "res/levels/level" + String.valueOf(level) + ".txt";
+        string_level = "res/levels/level" + level + ".txt";
         int i = 0;
         try {
             FileReader fr = new FileReader(string_level);
@@ -41,6 +41,18 @@ public class Map {
                         common_view.has_item[i][j] = 0;
                         if (common_view.scene[i][j] == '#' || common_view.scene[i][j] == ' ') {
                             common_view.has_item[i][j] = 2;
+                        } else if (common_view.scene[i][j] == 'V') {
+                            Enemy enemy = new Venom(common_view.TILESIZE * j, common_view.TILESIZE * i);
+                            common_view.enemies.add(enemy);
+                            common_view.scene[i][j] = ' ';
+                        } else if (common_view.scene[i][j] == 'G') {
+                            Enemy enemy = new Ghost(common_view.TILESIZE * j, common_view.TILESIZE * i);
+                            common_view.enemies.add(enemy);
+                            common_view.scene[i][j] = ' ';
+                        } else if (common_view.scene[i][j] == 'B') {
+                            Enemy enemy = new Bat(common_view.TILESIZE * j, common_view.TILESIZE * i);
+                            common_view.enemies.add(enemy);
+                            common_view.scene[i][j] = ' ';
                         } else {
                             int random = (int) (Math.random() * 100 + 1);
                             if (random % 3 == 0) {
@@ -52,7 +64,7 @@ public class Map {
                     }
                     i += 1;
                 }
-                rows --;
+                rows--;
             }
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -81,16 +93,32 @@ public class Map {
     }
 
     public void load_level_passed() {
-        try {
-            File f = new File("res/levels/passed.txt");
-            FileWriter fw = new FileWriter(f);
-            for (int i = 1; i <= common_view.map.getLevel(); i++) {
-                fw.write(i + 48);
-                fw.write(" ");
+        if (get_level_passed().isEmpty()) {
+            try {
+                File f = new File("res/levels/passed.txt");
+                FileWriter fw = new FileWriter(f);
+                for (int i = 1; i <= common_view.map.getLevel(); i++) {
+                    fw.write(i + 48);
+                    fw.write(" ");
+                }
+                fw.close();
+            } catch (IOException ex) {
+                System.out.println("Loi ghi file: " + ex);
             }
-            fw.close();
-        } catch (IOException ex) {
-            System.out.println("Loi ghi file: " + ex);
+        } else {
+            if (get_level_passed().get(get_level_passed().size() - 1).compareTo(String.valueOf(level)) < 0) {
+                try {
+                    File f = new File("res/levels/passed.txt");
+                    FileWriter fw = new FileWriter(f);
+                    for (int i = 1; i <= common_view.map.getLevel(); i++) {
+                        fw.write(i + 48);
+                        fw.write(" ");
+                    }
+                    fw.close();
+                } catch (IOException ex) {
+                    System.out.println("Loi ghi file: " + ex);
+                }
+            }
         }
     }
 
@@ -100,13 +128,5 @@ public class Map {
 
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    public String getString_level() {
-        return string_level;
-    }
-
-    public void setString_level(String string_level) {
-        this.string_level = string_level;
     }
 }

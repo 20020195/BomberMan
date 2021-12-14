@@ -1,9 +1,11 @@
 package sound;
 
-import common.*;
+import common.common_view;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.io.File;
-import javax.sound.sampled.*;
 
 
 public class SoundEffect {
@@ -44,5 +46,4 @@ public class SoundEffect {
             this.clip.loop(100);
         }
     }
-
 }

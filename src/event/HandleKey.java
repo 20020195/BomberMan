@@ -29,7 +29,7 @@ public class HandleKey implements KeyListener {
         if (common_view.is_playing) {
             if (!common_view.bomber.isDie()) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (common_view.bombs.size() < 2) {
+                    if (common_view.bombs.size() < common_view.bomber.getNumber_of_bombs()) {
                         int size = common_view.TILESIZE * common_view.SCALE;
                         Bomb bomb = new Bomb(0, 0);
                         int _x = (common_view.bomber.getX() / size);
@@ -78,7 +78,7 @@ public class HandleKey implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (common_view.is_playing) {
+        if (common_view.is_playing && common_view.bomber != null) {
             if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 common_view.bomber.setRight(false);
             }

@@ -1,6 +1,6 @@
 package entities;
 
-import common.*;
+import common.common_view;
 import sound.SoundEffect;
 
 import java.awt.*;
@@ -9,12 +9,12 @@ import java.awt.image.BufferedImage;
 public class Bomber extends Entity {
     protected int speed = 2;
 
-    public boolean moving = false;
+    protected boolean moving = false;
     protected boolean right = false;
     protected boolean left = false;
     protected boolean up = false;
     protected boolean down = false;
-    public boolean die = false;
+    protected boolean die = false;
 
     protected boolean no_dead = false;
     protected long time_start_boost;
@@ -22,6 +22,10 @@ public class Bomber extends Entity {
 
     protected SoundEffect sound_foot;
     protected SoundEffect sound_item_get;
+
+    private int number_of_bombs = 1;
+    private final int expiry_item_speed = 5000;
+    private final int expiry_item_no_dead = 5000;
 
     public Bomber(int xUnit, int yUnit) {
         super(xUnit, yUnit);
@@ -102,14 +106,7 @@ public class Bomber extends Entity {
             if (moving) {
                 sound_foot.play_sound();
                 sound_foot.loop();
-                frame++;
-                if (frame > interval) {
-                    frame = 0;
-                    indexAnim++;
-                    if (indexAnim > 2) {
-                        indexAnim = 0;
-                    }
-                }
+                anim();
 
                 if (right) {
                     image = common_view.sprite.playerAnimRight[indexAnim];
@@ -125,11 +122,11 @@ public class Bomber extends Entity {
                 sound_foot.stop_sound();
             }
 
-            if (System.currentTimeMillis() - common_view.bomber.time_start_boost > 4000) {
-                common_view.bomber.speed = 2;
+            if (System.currentTimeMillis() - common_view.bomber.time_start_boost > expiry_item_speed) {
+                this.speed = 2;
             }
-            if (System.currentTimeMillis() - common_view.bomber.time_start_no_dead > 12000000) {
-                common_view.bomber.no_dead = false;
+            if (System.currentTimeMillis() - common_view.bomber.time_start_no_dead > expiry_item_no_dead) {
+                this.no_dead = false;
             }
         } else if (isDie()) {
             interval = 12;
@@ -145,10 +142,17 @@ public class Bomber extends Entity {
                 common_view.game_over = true;
             }
         }
-        if (common_view.bosses.isEmpty()) {
+        if (common_view.enemies.isEmpty()) {
             if (common_view.bomber.getX() == 20 * common_view.size) {
                 if (common_view.bomber.getY() == 14 * common_view.size) {
-                    common_view.win_game = true;
+                    common_view.win_level = true;
+                    if (common_view.map.getLevel() == 9) {
+                        common_view.win_game = true;
+                        common_view.map.load_level_passed();
+                        common_view.handleMouse.clear();
+                        common_view.win_level = false;
+                        common_view.is_playing = false;
+                    }
                 }
             }
         }
@@ -161,25 +165,35 @@ public class Bomber extends Entity {
 
     public void handle_eat_item(int x, int y) {
         char[][] scene = common_view.scene;
-        if (scene[y][x] == '1') {
-            this.speed = 4;
-            time_start_boost = System.currentTimeMillis();
-        }
-        if (scene[y][x] == '2') {
-            no_dead = true;
-            time_start_no_dead = System.currentTimeMillis();
-        }
-
-        scene[y][x] = ' ';
-        common_view.has_item[y][x] = 0;
         for (int i = 0; i < common_view.items.size(); i++) {
-            if (x * common_view.size == common_view.items.get(i).getX()) {
-                if (y * common_view.size == common_view.items.get(i).getY()) {
+            if (common_view.items.get(i).getX() == x * common_view.size) {
+                if (common_view.items.get(i).getY() == y * common_view.size) {
+                    if (common_view.items.get(i).getType_item() == "item_speed") {
+                        speed = 4;
+                        time_start_boost = System.currentTimeMillis();
+                    } else if (common_view.items.get(i).getType_item() == "item_deadth") {
+                        no_dead = true;
+                        time_start_no_dead = System.currentTimeMillis();
+                    } else if (common_view.items.get(i).getType_item() == "item_bomb") {
+                        if (getNumber_of_bombs() < 2) {
+                            setNumber_of_bombs(getNumber_of_bombs() + 1);
+                        }
+                    } else if (common_view.items.get(i).getType_item() == "item_freezer") {
+                        for (int j = 0; j < common_view.enemies.size(); j++) {
+                            common_view.enemies.get(j).setFreezer(true);
+                            common_view.enemies.get(j).setTime_start_freezer(System.currentTimeMillis());
+                        }
+                    }
                     common_view.items.remove(i);
+                    sound_item_get.is_play_music = false;
+                    sound_item_get.play_sound();
                     break;
                 }
             }
         }
+
+        scene[y][x] = ' ';
+        common_view.has_item[y][x] = 0;
     }
 
     public boolean collisionEnemy() {
@@ -205,111 +219,111 @@ public class Bomber extends Entity {
 
     public boolean isFreeR(int x, int y) {
         char[][] scene = common_view.scene;
-        boolean a = false;
+        boolean canMove = false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        if (x + this.speed > scene[0].length * size) {
+        if (x + speed > scene[0].length * size) {
             return false;
         } else {
             if (x % size != 0) {
                 if ((x + 2) % size == 0) {
                     this.x += 2;
                 } else {
-                    a = true;
+                    canMove =true;
                 }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
 
-                if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') {
+                if (scene[y1][x1 + 1] == ' ' || scene[y1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1);
-                    a = true;
+                    canMove =true;
                 } else {
-                    a = false;
+                    canMove =false;
                 }
             } else if (y % size != 0 && x % size == 0) {
                 int y1 = y / size;
                 int x1 = x / size;
-                if ((scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') && scene[y1 + 1][x1 + 1] == ' ') {
+                if ((scene[y1][x1 + 1] == '1') && scene[y1 + 1][x1 + 1] == ' ') {
                     handle_eat_item(x1 + 1, y1);
-                    a = true;
-                } else if (scene[y1][x1 + 1] == ' ' && (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2')) {
+                    canMove =true;
+                } else if (scene[y1][x1 + 1] == ' ' && scene[y1 + 1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1 + 1);
-                    a = true;
-                } else if (scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') {
+                    canMove =true;
+                } else if (scene[y1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1);
-                    a = true;
-                } else if (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') {
+                    canMove =true;
+                } else if (scene[y1 + 1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1 + 1);
-                    a = true;
-                } else if ((scene[y1][x1 + 1] == '1' || scene[y1][x1 + 1] == '2') && (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2')) {
+                    canMove =true;
+                } else if (scene[y1][x1 + 1] == '1' && scene[y1 + 1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1 + 1);
                     handle_eat_item(x1 + 1, y1);
-                    a = true;
+                    canMove =true;
                 } else if (scene[y1][x1 + 1] == ' ' && scene[y1 + 1][x1 + 1] == ' ') {
-                    a = true;
+                    canMove =true;
                 }
             }
         }
-        return a;
+        return canMove;
     }
 
     public boolean isFreeL(int x, int y) {
         char[][] scene = common_view.scene;
-        boolean a = false;
+        boolean canMove =false;
         int size = common_view.TILESIZE * common_view.SCALE;
-        if (x - this.speed < size) {
+        if (x - speed < size) {
             return false;
         } else {
             if (x % size != 0) {
                 if ((x - 2) % size == 0) {
                     this.x -= 2;
                 } else {
-                    a = true;
+                    canMove =true;
                 }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1][x1 - 1] == ' ' || scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') {
+                if (scene[y1][x1 - 1] == ' ' || scene[y1][x1 - 1] == '1') {
                     handle_eat_item(x1 - 1, y1);
-                    a = true;
+                    canMove =true;
                 } else {
-                    a = false;
+                    canMove =false;
                 }
             } else if (y % size != 0 && x % size == 0) {
                 int y1 = y / size;
                 int x1 = x / size;
-                if ((scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') && scene[y1 + 1][x1 - 1] == ' ') {
+                if (scene[y1][x1 - 1] == '1' && scene[y1 + 1][x1 - 1] == ' ') {
                     handle_eat_item(x1 - 1, y1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1][x1 - 1] == ' ' && (scene[y1 + 1][x1 - 1] == '1' || scene[y1 + 1][x1 - 1] == '2')) {
+                if (scene[y1][x1 - 1] == ' ' && scene[y1 + 1][x1 - 1] == '1') {
                     handle_eat_item(x1 - 1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') {
+                if (scene[y1][x1 - 1] == '1') {
                     handle_eat_item(x1 - 1, y1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 + 1][x1 - 1] == '1' || scene[y1 + 1][x1 - 1] == '2') {
+                if (scene[y1 + 1][x1 - 1] == '1') {
                     handle_eat_item(x1 - 1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if ((scene[y1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2') && (scene[y1 + 1][x1 - 1] == '1' || scene[y1][x1 - 1] == '2')) {
+                if (scene[y1][x1 - 1] == '1' && scene[y1 + 1][x1 - 1] == '1') {
                     handle_eat_item(x1 - 1, y1);
                     handle_eat_item(x1 - 1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
                 if (scene[y1][x1 - 1] == ' ' && scene[y1 + 1][x1 - 1] == ' ') {
-                    a = true;
+                    canMove =true;
                 }
             }
         }
-        return a;
+        return canMove;
     }
 
     public boolean isFreeU(int x, int y) {
         char[][] scene = common_view.scene;
-        boolean a = false;
+        boolean canMove =false;
         int size = common_view.TILESIZE * common_view.SCALE;
         if (y - speed < size) {
             return false;
@@ -318,52 +332,52 @@ public class Bomber extends Entity {
                 if ((y - 2) % size == 0) {
                     this.y -= 2;
                 } else {
-                    a = true;
+                    canMove =true;
                 }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1 - 1][x1] == ' ' || scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2') {
+                if (scene[y1 - 1][x1] == ' ' || scene[y1 - 1][x1] == '1') {
                     handle_eat_item(x1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 } else {
-                    a = false;
+                    canMove =false;
                 }
             } else if (y % size == 0 && x % size != 0) {
                 int y1 = y / size;
                 int x1 = x / size;
-                if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && scene[y1 - 1][x1] == ' ') {
+                if (scene[y1 - 1][x1 + 1] == '1' && scene[y1 - 1][x1] == ' ') {
                     handle_eat_item(x1 + 1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 - 1][x1 + 1] == ' ' && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2')) {
+                if (scene[y1 - 1][x1 + 1] == ' ' && scene[y1 - 1][x1] == '1') {
                     handle_eat_item(x1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') {
+                if (scene[y1 - 1][x1 + 1] == '1') {
                     handle_eat_item(x1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2') {
+                if (scene[y1 - 1][x1] == '1') {
                     handle_eat_item(x1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 }
-                if ((scene[y1 - 1][x1 + 1] == '1' || scene[y1 - 1][x1 + 1] == '2') && (scene[y1 - 1][x1] == '1' || scene[y1 - 1][x1] == '2')) {
+                if (scene[y1 - 1][x1 + 1] == '1' && scene[y1 - 1][x1] == '1') {
                     handle_eat_item(x1 + 1, y1 - 1);
                     handle_eat_item(x1, y1 - 1);
-                    a = true;
+                    canMove =true;
                 }
                 if (scene[y1 - 1][x1 + 1] == ' ' && scene[y1 - 1][x1] == ' ') {
-                    a = true;
+                    canMove =true;
                 }
             }
         }
-        return a;
+        return canMove;
     }
 
     public boolean isFreeD(int x, int y) {
         char[][] scene = common_view.scene;
-        boolean a = false;
+        boolean canMove =false;
         int size = common_view.TILESIZE * common_view.SCALE;
         if (y + speed > scene.length * size) {
             return false;
@@ -372,47 +386,47 @@ public class Bomber extends Entity {
                 if ((y + 2) % size == 0) {
                     this.y += 2;
                 } else {
-                    a = true;
+                    canMove =true;
                 }
             } else if (x % size == 0 && y % size == 0) {
                 int x1 = x / size;
                 int y1 = y / size;
-                if (scene[y1 + 1][x1] == ' ' || scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2') {
+                if (scene[y1 + 1][x1] == ' ' || scene[y1 + 1][x1] == '1') {
                     handle_eat_item(x1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 } else {
-                    a = false;
+                    canMove =false;
                 }
             } else if (y % size == 0 && x % size != 0) {
                 int y1 = y / size;
                 int x1 = x / size;
-                if ((scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') && scene[y1 + 1][x1] == ' ') {
+                if (scene[y1 + 1][x1 + 1] == '1' && scene[y1 + 1][x1] == ' ') {
                     handle_eat_item(x1 + 1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 + 1][x1 + 1] == ' ' && (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2')) {
+                if (scene[y1 + 1][x1 + 1] == ' ' && scene[y1 + 1][x1] == '1') {
                     handle_eat_item(x1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') {
+                if (scene[y1 + 1][x1 + 1] == '1') {
                     handle_eat_item(x1 + 1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2') {
+                if (scene[y1 + 1][x1] == '1') {
                     handle_eat_item(x1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
-                if ((scene[y1 + 1][x1 + 1] == '1' || scene[y1 + 1][x1 + 1] == '2') && (scene[y1 + 1][x1] == '1' || scene[y1 + 1][x1] == '2')) {
+                if (scene[y1 + 1][x1 + 1] == '1' && scene[y1 + 1][x1] == '1') {
                     handle_eat_item(x1 + 1, y1 + 1);
                     handle_eat_item(x1, y1 + 1);
-                    a = true;
+                    canMove =true;
                 }
                 if (scene[y1 + 1][x1 + 1] == ' ' && scene[y1 + 1][x1] == ' ') {
-                    a = true;
+                    canMove =true;
                 }
             }
         }
-        return a;
+        return canMove;
     }
 
     public void setRight(boolean right) {
@@ -441,6 +455,14 @@ public class Bomber extends Entity {
 
     public void setDie(boolean die) {
         this.die = die;
+    }
+
+    public int getNumber_of_bombs() {
+        return number_of_bombs;
+    }
+
+    public void setNumber_of_bombs(int number_of_bombs) {
+        this.number_of_bombs = number_of_bombs;
     }
 }
 

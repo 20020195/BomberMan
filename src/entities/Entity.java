@@ -1,6 +1,6 @@
 package entities;
 
-import common.*;
+import common.common_view;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,6 +10,7 @@ public abstract class Entity {
     protected int y;
 
     protected BufferedImage image;
+
     protected int frame = 0;
     protected int interval = 5;
     protected int indexAnim = 0;
@@ -17,6 +18,17 @@ public abstract class Entity {
     public Entity(int xUnit, int yUnit) {
         this.x = xUnit * common_view.SCALE;
         this.y = yUnit * common_view.SCALE;
+    }
+
+    public void anim() {
+        frame++;
+        if (frame > interval) {
+            frame = 0;
+            indexAnim++;
+            if (indexAnim > 2) {
+                indexAnim = 0;
+            }
+        }
     }
 
     public abstract void update();
@@ -45,9 +57,5 @@ public abstract class Entity {
 
     public int getIndexAnim() {
         return indexAnim;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
     }
 }

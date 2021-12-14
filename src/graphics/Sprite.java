@@ -1,14 +1,12 @@
 package graphics;
 
+import common.common_view;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import common.*;
 
-/**
- * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
- */
 public class Sprite {
     public BufferedImage player;
     public BufferedImage[] playerAnimUp;
@@ -23,13 +21,6 @@ public class Sprite {
     public BufferedImage[] venomAnimRight;
     public BufferedImage[] venomAnimLeft;
     public BufferedImage[] venomAnimDead;
-
-    public BufferedImage boss;
-    public BufferedImage[] bossAnimUp;
-    public BufferedImage[] bossAnimDown;
-    public BufferedImage[] bossAnimRight;
-    public BufferedImage[] bossAnimLeft;
-    public BufferedImage[] bossAnimDead;
 
     public BufferedImage bat;
     public BufferedImage[] batAnimUp;
@@ -54,6 +45,8 @@ public class Sprite {
 
     public BufferedImage[] item_speed;
     public BufferedImage[] item_deadth;
+    public BufferedImage[] item_freezer;
+    public BufferedImage[] item_bomb;
 
     public BufferedImage blockTile;
     public BufferedImage spriteSheet;
@@ -68,14 +61,14 @@ public class Sprite {
     public BufferedImage mound;
     public BufferedImage portal;
 
-    public void load()
-    {
+    public void load() {
         try {
             common_view.view_menu = ImageIO.read(new File("res/textures/menu.png"));
             common_view.view_how_to_play = ImageIO.read(new File("res/textures/how_to_play.png"));
             common_view.view_choose_map = ImageIO.read(new File("res/textures/choose_level.png"));
             common_view.view_pause = ImageIO.read(new File("res/textures/pause.png"));
             common_view.view_game_over = ImageIO.read(new File("res/textures/game_over.png"));
+            common_view.view_win_game = ImageIO.read(new File("res/textures/win_game.png"));
             spriteSheet = ImageIO.read(new File("res/textures/classic.png"));
 
             int size = common_view.TILESIZE;
@@ -101,13 +94,6 @@ public class Sprite {
             batAnimLeft = new BufferedImage[3];
             batAnimDead = new BufferedImage[3];
 
-            boss = spriteSheet.getSubimage(2 * size, 0, size, size);
-            bossAnimUp = new BufferedImage[3];
-            bossAnimDown = new BufferedImage[3];
-            bossAnimRight = new BufferedImage[3];
-            bossAnimLeft = new BufferedImage[3];
-            bossAnimDead = new BufferedImage[3];
-
             ghost = spriteSheet.getSubimage(2 * size, 0, size, size);
             ghostAnimUp = new BufferedImage[3];
             ghostAnimDown = new BufferedImage[3];
@@ -122,8 +108,10 @@ public class Sprite {
             leftExplosion = new BufferedImage[3];
             rightExplosion = new BufferedImage[3];
 
-            item_speed = new BufferedImage[2];
-            item_deadth = new BufferedImage[6];
+            item_speed = new BufferedImage[3];
+            item_deadth = new BufferedImage[3];
+            item_freezer = new BufferedImage[3];
+            item_bomb = new BufferedImage[3];
 
             for (int i = 0; i < 3; i++) {
                 playerAnimLeft[i] = spriteSheet.getSubimage((i + 12) * size, 7 * size, size, size);
@@ -133,8 +121,8 @@ public class Sprite {
                 playerAnimDead[i] = spriteSheet.getSubimage((i + 12) * size, 8 * size, size, size);
 
                 venomAnimLeft[i] = spriteSheet.getSubimage(3 * size, i * size, size, size);
-                venomAnimRight[i] = spriteSheet.getSubimage(1 * size, i * size, size, size);
-                venomAnimUp[i] = spriteSheet.getSubimage(0 * size, i * size, size, size);
+                venomAnimRight[i] = spriteSheet.getSubimage(size, i * size, size, size);
+                venomAnimUp[i] = spriteSheet.getSubimage(0, i * size, size, size);
                 venomAnimDown[i] = spriteSheet.getSubimage(2 * size, i * size, size, size);
                 venomAnimDead[i] = spriteSheet.getSubimage((i + 4) * size, 2 * size, size, size);
 
@@ -150,12 +138,6 @@ public class Sprite {
                 ghostAnimDown[i] = spriteSheet.getSubimage((i + 8) * size, 10 * size, size, size);
                 ghostAnimDead[i] = spriteSheet.getSubimage(15 * size, i * size, size, size);
 
-                bossAnimLeft[i] = spriteSheet.getSubimage((i + 11) * size, 10 * size, size, size);
-                bossAnimRight[i] = spriteSheet.getSubimage((i + 8) * size, 11 * size, size, size);
-                bossAnimUp[i] = spriteSheet.getSubimage((i + 11) * size, 11 * size, size, size);
-                bossAnimDown[i] = spriteSheet.getSubimage((i + 8) * size, 10 * size, size, size);
-                bossAnimDead[i] = spriteSheet.getSubimage(15 * size, i * size, size, size);
-
                 bombAnim[i] = spriteSheet.getSubimage(i * size, 3 * size, size, size);
                 fontExplosion[i] = spriteSheet.getSubimage(0, (i + 4) * size, size, size);
                 upExplosion[i] = spriteSheet.getSubimage((i + 1) * size, 4 * size, size, size);
@@ -163,12 +145,11 @@ public class Sprite {
                 leftExplosion[i] = spriteSheet.getSubimage(0, (i + 7) * size, size, size);
                 rightExplosion[i] = spriteSheet.getSubimage(2 * size, (i + 7) * size, size, size);
 
-                item_deadth[i] = spriteSheet.getSubimage(6 * size, 10 * size, size, size);
-                //item_deadth[i + 3] = spriteSheet.getSubimage(11 * size, (i + 5) * size, size, size);
+                item_speed[i] = spriteSheet.getSubimage(i * size, 15 * size, size, size);
+                item_deadth[i] = spriteSheet.getSubimage((i + 3) * size, 15 * size, size, size);
+                item_freezer[i] = spriteSheet.getSubimage((i + 6) * size, 15 * size, size, size);
+                item_bomb[i] = spriteSheet.getSubimage((i + 9) * size, 15 * size, size, size);
             }
-
-            item_speed[0] = spriteSheet.getSubimage(0 * size, 15 * size, size, size);
-            item_speed[1] = spriteSheet.getSubimage(1 * size, 15 * size, size, size);
 
             blockTile = spriteSheet.getSubimage(5 * size, 14 * size, size, size);
             grass = spriteSheet.getSubimage(6 * size, size, size, size);
@@ -180,7 +161,7 @@ public class Sprite {
             banana = spriteSheet.getSubimage(4 * size, 14 * size, size, size);
             soil = spriteSheet.getSubimage(4 * size, size, size, size);
             mound = spriteSheet.getSubimage(7 * size, 14 * size, size, size);
-            portal = spriteSheet.getSubimage( 4 * size, 0, size, size);
+            portal = spriteSheet.getSubimage(4 * size, 0, size, size);
         } catch (IOException e) {
             e.printStackTrace();
         }
